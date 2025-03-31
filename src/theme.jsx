@@ -46,9 +46,6 @@ const theme = createTheme({
     },
     h5: { fontWeight: 700 },
   },
-  shape: {
-    borderRadius: 12,
-  },
 });
 
 export default theme;

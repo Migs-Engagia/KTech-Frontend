@@ -121,7 +121,10 @@ const SignIn = () => {
         </Box>
       </Paper>
 
-      <ProgressModal open={loading} message="Signing you in. Please wait..." />
+      <ProgressModal
+        open={loading}
+        message="Verifying Credentials. Please wait..."
+      />
     </Box>
   );
 };
