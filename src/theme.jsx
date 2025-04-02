@@ -3,39 +3,39 @@ import { createTheme } from "@mui/material/styles";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#EF4444", // Red from the card
+      main: "#EF4444",
       contrastText: "#FFFFFF",
     },
     secondary: {
-      main: "#FACC15", // Yellow chip color
+      main: "#FACC15",
       contrastText: "#212121",
     },
     background: {
-      default: "#FFFDF8", // Light warm base
+      default: "#FFFDF8",
       paper: "#FFFFFF",
     },
     info: {
-      main: "#0077B6", // Blue (Sugar/Renewables)
+      main: "#0077B6",
     },
     success: {
-      main: "#43A047", // Green for success
+      main: "#43A047",
     },
     warning: {
-      main: "#F9A825", // Yellow (Agri-Consumer) — alternate to chip yellow
+      main: "#F9A825",
     },
     error: {
-      main: "#D32F2F", // Deeper red for errors
+      main: "#D32F2F",
     },
     text: {
       primary: "#1C2B36",
       secondary: "#555",
     },
     neutral: {
-      main: "#FCD5B5", // Light peach (hand)
+      main: "#FCD5B5",
       contrastText: "#212121",
     },
     accent: {
-      main: "#EAB38D", // Beige (palm)
+      main: "#EAB38D",
     },
   },
   typography: {
@@ -45,6 +45,24 @@ const theme = createTheme({
       textTransform: "none",
     },
     h5: { fontWeight: 700 },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        outlinedError: {
+          "&:hover": {
+            backgroundColor: "#FFE6E6", // Soft red background
+            borderColor: "#D32F2F",
+            color: "#D32F2F",
+          },
+        },
+        containedError: {
+          "&:hover": {
+            backgroundColor: "#B71C1C", // Darker red
+          },
+        },
+      },
+    },
   },
 });
 

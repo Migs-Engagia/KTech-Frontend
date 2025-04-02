@@ -11,7 +11,7 @@ import theme from "../theme";
 import logo from "../logo.png";
 import MenuIcon from "@mui/icons-material/Menu";
 import MainDrawer from "../components/MainDrawer";
-import Dashboard from "../components/Dashboard";
+import Dashboard from "../components/Dashboard/Dashboard";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 
@@ -41,8 +41,8 @@ function Layout() {
           </Typography>
 
           <Box sx={{ display: "flex", alignItems: "center", ml: "auto" }}>
-            <Typography sx={{ mr: 1, fontWeight: "bold" }}>
-              {user.first_name} {user.last_name}
+            <Typography sx={{ mr: 1 }}>
+              {user.district} District, {user.first_name} {user.last_name}
             </Typography>
             |
             <IconButton color="inherit" onClick={handleLogout} title="Logout">

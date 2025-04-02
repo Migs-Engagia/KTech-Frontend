@@ -7,7 +7,6 @@ import SignIn from "./components/SignIn";
 import Layout from "./components/Layout";
 import RedirectIfAuthenticated from "./components/RedirectIfAuthenticated";
 
-
 function App() {
   return (
     <ThemeProvider theme={theme}>

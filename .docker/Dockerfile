@@ -1,20 +1,23 @@
-# Use the official Node.js 20 image
+# Use the official Node.js 20 Alpine image
 FROM node:20-alpine
 
-# Set the working directory inside the container
+# Set working directory inside container
 WORKDIR /app
 
-# Copy package.json and package-lock.json first for caching
+# Copy only package files first to leverage Docker cache
 COPY package.json package-lock.json ./
 
-# Install dependencies
+# Install dependencies (clean & fast)
 RUN npm ci
 
-# Copy the rest of the project files
+# Copy the rest of the app
 COPY . .
 
-# Expose the port that Vite runs on
+# Set environment to development to ensure error overlays are active
+ENV NODE_ENV=development
+
+# Expose the port Vite uses
 EXPOSE 5173
 
-# Start the Vite development server
-CMD ["npm", "run", "dev", "--", "--host"]
+# Start Vite dev server with host exposed
+CMD ["sh", "-c", "npm run dev -- --host"]

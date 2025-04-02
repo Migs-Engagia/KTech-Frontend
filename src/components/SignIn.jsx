@@ -11,11 +11,10 @@ import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import { AccountCircle } from "@mui/icons-material";
 import useAuth from "../hooks/UseAuth";
-import { AxiosInstance } from "../utils/axiosInstance";
+import axios from "../utils/axiosInstance";
 import ProgressModal from "./ProgressModal";
 
 const SignIn = () => {
-  const axios = AxiosInstance();
   const { login } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState("");
@@ -30,7 +29,6 @@ const SignIn = () => {
       });
 
       const { token, user } = response.data;
-      console.log(response);
       if (token && user) {
         login(token, user);
         navigate("/");
