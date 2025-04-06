@@ -4,52 +4,63 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  TextField,
   Typography,
   FormControl,
-  FormHelperText,
   Box,
 } from "@mui/material";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+
+import dayjs from "dayjs";
 import { useState, useEffect } from "react";
 import ConfirmationModal from "../../../ConfirmationDialogs/ConfirmationModal";
 
 const DateVisitedModal = ({ open, onClose, onSave, row }) => {
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
   const [isQualityRaiser, setIsQualityRaiser] = useState(false);
   const [touchedSave, setTouchedSave] = useState(false);
-
+  const [dateOfInput, setDateOfInput] = useState(null);
+  const [isAlreadyVisited, setIsAlreadyVisited] = useState(false);
   const showError = touchedSave && !date;
-  const formattedDateOfInput = new Date().toISOString().split("T")[0];
 
   useEffect(() => {
     if (open && row) {
       setIsQualityRaiser(!!row.qualityRaiser);
+
+      const alreadyVisited = !!row.customerVisited;
+      setIsAlreadyVisited(alreadyVisited);
+
+      setDate(alreadyVisited ? dayjs(row.dateOfVisit) : null);
+      setDateOfInput(
+        alreadyVisited
+          ? row.dateOfVisitInput
+          : dayjs().format("YYYY-MM-DD HH:mm:ss")
+      );
+
+      setTouchedSave(false);
     }
   }, [open, row]);
 
   const handleSaveClick = () => {
     setTouchedSave(true);
     if (!date) return;
-    setShowConfirm(true); // Trigger confirmation modal
+    setShowConfirm(true);
   };
 
   const handleConfirmSave = () => {
-    onSave(date);
+    const visit = {
+      ...row,
+      dateOfVisit: date.format("YYYY-MM-DD HH:mm:ss"),
+      dateOfInput,
+    };
+    onSave(visit);
     setShowConfirm(false);
-    handleReset();
     onClose();
   };
 
   const handleClose = () => {
     onClose();
-  };
-
-  const handleReset = () => {
-    setDate("");
-    setTouchedSave(false);
-    setIsQualityRaiser(false);
-    setShowConfirm(false);
   };
 
   return (
@@ -59,53 +70,106 @@ const DateVisitedModal = ({ open, onClose, onSave, row }) => {
 
         <DialogContent sx={{ pt: 1 }}>
           {isQualityRaiser ? (
-            <FormControl fullWidth error={showError} sx={{ mt: 2 }}>
-              <Typography
-                variant="body2"
-                sx={{
-                  mb: 1,
-                  color: "text.secondary",
-                  lineHeight: 1.6,
-                }}
-              >
-                Please select the <strong>Date of Visit</strong>. <br />
-                <em>This cannot be edited once saved.</em>
-              </Typography>
-
-              <TextField
-                type="date"
-                required
-                fullWidth
-                InputLabelProps={{ shrink: true }}
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                sx={{
-                  mb: 0.5,
-                  backgroundColor: "#fafafa",
-                  borderRadius: 1,
-                }}
-              />
-
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  mt: 0.5,
-                  minHeight: 24,
-                }}
-              >
+            isAlreadyVisited ? (
+              <Box sx={{ mt: 2 }}>
                 <Typography
-                  variant="caption"
-                  color={showError ? "error" : "text.secondary"}
+                  variant="body2"
+                  sx={{ color: "text.secondary", mb: 1.5 }}
                 >
-                  {showError ? "Please select a valid date." : " "}
+                  This raiser has already been visited. The saved information is
+                  shown below:
                 </Typography>
-                <Typography variant="caption" sx={{ textAlign: "right" }}>
-                  Date of Input: {formattedDateOfInput}
-                </Typography>
+
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    border: "1px solid #ddd",
+                    borderRadius: 2,
+                    p: 2,
+                    backgroundColor: "#f9f9f9",
+                  }}
+                >
+                  <Box>
+                    <Typography variant="subtitle2" color="text.secondary">
+                      Date of Visit
+                    </Typography>
+                    <Typography variant="body1" fontWeight={500}>
+                      {dayjs(date).format("MMMM D, YYYY")}
+                    </Typography>
+                  </Box>
+
+                  <Box>
+                    <Typography variant="subtitle2" color="text.secondary">
+                      Date of Input
+                    </Typography>
+                    <Typography variant="body1" fontWeight={500}>
+                      {dayjs(dateOfInput).format("MMMM D, YYYY • h:mm A")}
+                    </Typography>
+                  </Box>
+                </Box>
               </Box>
-            </FormControl>
+            ) : (
+              <FormControl fullWidth error={showError} sx={{ mt: 2 }}>
+                <Typography
+                  variant="body2"
+                  sx={{ mb: 1, color: "text.secondary", lineHeight: 1.6 }}
+                >
+                  Please select the <strong>Date of Visit</strong>. <br />
+                  <em>This cannot be edited once saved.</em>
+                </Typography>
+
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    format="YYYY-MM-DD"
+                    value={date}
+                    onChange={(newValue) => {
+                      setDate(newValue);
+                      setDateOfInput(dayjs().format("YYYY-MM-DD HH:mm:ss"));
+                    }}
+                    minDate={
+                      row?.lkDateCreated ? dayjs(row.lkDateCreated) : undefined
+                    }
+                    slotProps={{
+                      textField: {
+                        required: true,
+                        fullWidth: true,
+                        error: showError,
+                        variant: "outlined",
+                        size: "medium",
+                        sx: {
+                          mb: 0.5,
+                          backgroundColor: "#fafafa",
+                          borderRadius: 1,
+                        },
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    mt: 0.5,
+                    minHeight: 24,
+                  }}
+                >
+                  <Typography
+                    variant="caption"
+                    color={showError ? "error" : "text.secondary"}
+                  >
+                    {showError ? "Please select a valid date." : " "}
+                  </Typography>
+                  <Typography variant="caption">
+                    {dateOfInput
+                      ? dayjs(dateOfInput).format("MMM D, YYYY • h:mm A")
+                      : ""}
+                  </Typography>
+                </Box>
+              </FormControl>
+            )
           ) : (
             <Typography color="error" sx={{ mt: 2 }}>
               This action is only allowed for Quality Raisers.
@@ -117,23 +181,23 @@ const DateVisitedModal = ({ open, onClose, onSave, row }) => {
           <Button onClick={handleClose} variant="outlined" color="error">
             Cancel
           </Button>
-          <Button
-            onClick={handleSaveClick}
-            variant="contained"
-            disabled={!isQualityRaiser}
-            sx={{
-              textTransform: "none",
-              fontWeight: 500,
-              borderRadius: 2,
-              boxShadow: "none",
-            }}
-          >
-            Save
-          </Button>
+          {!isAlreadyVisited && isQualityRaiser && (
+            <Button
+              onClick={handleSaveClick}
+              variant="contained"
+              sx={{
+                textTransform: "none",
+                fontWeight: 500,
+                borderRadius: 2,
+                boxShadow: "none",
+              }}
+            >
+              Save
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
 
-      {/* Confirmation Dialog */}
       <ConfirmationModal
         open={showConfirm}
         onClose={() => setShowConfirm(false)}

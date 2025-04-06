@@ -4,37 +4,30 @@ import {
   DialogContent,
   DialogActions,
   Button,
+  Typography,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
   TextField,
-  Typography,
   Box,
 } from "@mui/material";
-import { useState, useEffect } from "react";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import ConfirmationModal from "../../../ConfirmationDialogs/ConfirmationModal";
+
+import dayjs from "dayjs";
+import { useState, useEffect } from "react";
 
 const MAX_LENGTH = 255;
 
 const RecruitmentModal = ({ open, onClose, onSave, row }) => {
   const [status, setStatus] = useState("");
   const [remarks, setRemarks] = useState("");
-  const [recruitDate, setRecruitDate] = useState("");
+  const [recruitDate, setRecruitDate] = useState(null);
   const [freeItems, setFreeItems] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
   const [touchedSave, setTouchedSave] = useState(false);
-
-  useEffect(() => {
-    if (open) {
-      setStatus("");
-      setRemarks("");
-      setRecruitDate("");
-      setFreeItems("");
-      setShowConfirm(false);
-      setTouchedSave(false);
-    }
-  }, [open]);
 
   const isWorkInProgress = status === "Work in Progress";
   const isRecruited = status === "Recruited";
@@ -43,23 +36,38 @@ const RecruitmentModal = ({ open, onClose, onSave, row }) => {
   const recruitDateError = isRecruited && touchedSave && !recruitDate;
   const freeItemsError = isRecruited && touchedSave && !freeItems.trim();
 
+  useEffect(() => {
+    if (open) {
+      setStatus("");
+      setRemarks("");
+      setRecruitDate(null);
+      setFreeItems("");
+      setShowConfirm(false);
+      setTouchedSave(false);
+    }
+  }, [open]);
+
   const handleSaveClick = () => {
     setTouchedSave(true);
 
     if (!status) return;
 
-    if (
+    const isInvalid =
       (isWorkInProgress && !remarks.trim()) ||
-      (isRecruited && (!recruitDate || !freeItems.trim()))
-    ) {
-      return;
-    }
+      (isRecruited && (!recruitDate || !freeItems.trim()));
+
+    if (isInvalid) return;
 
     setShowConfirm(true);
   };
 
   const handleConfirmSave = () => {
-    onSave({ status, remarks, recruitDate, freeItems });
+    onSave({
+      status,
+      remarks,
+      recruitDate: recruitDate ? dayjs(recruitDate).format("YYYY-MM-DD") : "",
+      freeItems,
+    });
     setShowConfirm(false);
     onClose();
   };
@@ -67,9 +75,11 @@ const RecruitmentModal = ({ open, onClose, onSave, row }) => {
   return (
     <>
       <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-        <DialogTitle>Recruitment Status</DialogTitle>
-        <DialogContent>
-          <FormControl fullWidth sx={{ mt: 1, mb: 2 }}>
+        <DialogTitle sx={{ fontWeight: 600, pb: 0 }}>
+          Recruitment Status
+        </DialogTitle>
+        <DialogContent sx={{ pt: 1 }}>
+          <FormControl fullWidth sx={{ mt: 2, mb: 2 }}>
             <InputLabel>Select Status</InputLabel>
             <Select
               value={status}
@@ -86,18 +96,16 @@ const RecruitmentModal = ({ open, onClose, onSave, row }) => {
           </FormControl>
 
           {isWorkInProgress && (
-            <>
+            <FormControl fullWidth error={remarksError}>
               <TextField
                 label="Remarks"
                 multiline
                 rows={5}
-                maxRows={4}
                 fullWidth
                 required
-                error={remarksError}
-                inputProps={{ maxLength: MAX_LENGTH }}
                 value={remarks}
                 onChange={(e) => setRemarks(e.target.value)}
+                inputProps={{ maxLength: MAX_LENGTH }}
                 sx={{ mb: 0.5 }}
               />
               <Box
@@ -119,63 +127,68 @@ const RecruitmentModal = ({ open, onClose, onSave, row }) => {
                   {remarks.length}/{MAX_LENGTH} characters
                 </Typography>
               </Box>
-            </>
+            </FormControl>
           )}
 
           {isRecruited && (
             <>
-              <TextField
-                type="date"
-                label="Recruitment Date"
-                InputLabelProps={{ shrink: true }}
-                required
-                fullWidth
-                error={recruitDateError}
-                helperText={
-                  recruitDateError ? "Recruitment date is required." : undefined
-                }
-                value={recruitDate}
-                onChange={(e) => setRecruitDate(e.target.value)}
-                sx={{ mb: 2 }}
-              />
+              <FormControl fullWidth error={recruitDateError} sx={{ mb: 2 }}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    label="Recruitment Date"
+                    value={recruitDate}
+                    onChange={(newValue) => setRecruitDate(newValue)}
+                    slotProps={{
+                      textField: {
+                        required: true,
+                        fullWidth: true,
+                        error: recruitDateError,
+                        helperText: recruitDateError
+                          ? "Recruitment date is required."
+                          : "",
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+              </FormControl>
 
-              <TextField
-                label="Free Items"
-                multiline
-                rows={5}
-                maxRows={4}
-                fullWidth
-                required
-                error={freeItemsError}
-                inputProps={{ maxLength: MAX_LENGTH }}
-                value={freeItems}
-                onChange={(e) => setFreeItems(e.target.value)}
-                sx={{ mb: 0.5 }}
-              />
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  mb: 2,
-                  minHeight: 24,
-                }}
-              >
-                <Typography
-                  variant="caption"
-                  color={freeItemsError ? "error" : "text.secondary"}
+              <FormControl fullWidth error={freeItemsError}>
+                <TextField
+                  label="Free Items"
+                  multiline
+                  rows={5}
+                  fullWidth
+                  required
+                  value={freeItems}
+                  onChange={(e) => setFreeItems(e.target.value)}
+                  inputProps={{ maxLength: MAX_LENGTH }}
+                  sx={{ mb: 0.5 }}
+                />
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    mb: 2,
+                    minHeight: 24,
+                  }}
                 >
-                  {freeItemsError ? "Free items detail is required." : " "}
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  {freeItems.length}/{MAX_LENGTH} characters
-                </Typography>
-              </Box>
+                  <Typography
+                    variant="caption"
+                    color={freeItemsError ? "error" : "text.secondary"}
+                  >
+                    {freeItemsError ? "Free items detail is required." : " "}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {freeItems.length}/{MAX_LENGTH} characters
+                  </Typography>
+                </Box>
+              </FormControl>
             </>
           )}
         </DialogContent>
 
-        <DialogActions>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button onClick={onClose} variant="outlined" color="error">
             Cancel
           </Button>
@@ -183,6 +196,12 @@ const RecruitmentModal = ({ open, onClose, onSave, row }) => {
             onClick={handleSaveClick}
             variant="contained"
             disabled={!status}
+            sx={{
+              textTransform: "none",
+              fontWeight: 500,
+              borderRadius: 2,
+              boxShadow: "none",
+            }}
           >
             Save
           </Button>

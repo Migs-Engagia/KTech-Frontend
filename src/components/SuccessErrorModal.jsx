@@ -1,18 +1,55 @@
 import React from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from "@mui/material";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Typography,
+  Box,
+} from "@mui/material";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import ErrorIcon from "@mui/icons-material/Error";
 
 const SuccessErrorModal = ({ open, onClose, type, message }) => {
+  const isSuccess = type === "success";
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{type === "success" ? "Success" : "Error"}</DialogTitle>
+    <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
+      <DialogTitle
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          color: isSuccess ? "success.main" : "error.main",
+          fontWeight: 600,
+        }}
+      >
+        {isSuccess ? (
+          <CheckCircleIcon fontSize="medium" />
+        ) : (
+          <ErrorIcon fontSize="medium" />
+        )}
+        {isSuccess ? "Success" : "Error"}
+      </DialogTitle>
+
       <DialogContent>
-        <Typography color={type === "success" ? "green" : "red"}>
-          {message || (type === "success" ? "Operation successful!" : "Something went wrong. Please try again.")}
+        <Typography variant="body1" sx={{ fontWeight: 500 }}>
+          {message ||
+            (isSuccess
+              ? "Operation completed successfully!"
+              : "Something went wrong. Please try again.")}
         </Typography>
       </DialogContent>
+
       <DialogActions>
-        <Button onClick={onClose} color="primary">
-          OK
+        <Button
+          onClick={onClose}
+          variant="contained"
+          color={isSuccess ? "success" : "error"}
+          sx={{ textTransform: "none", borderRadius: 2 }}
+        >
+          Confirm
         </Button>
       </DialogActions>
     </Dialog>

@@ -49,16 +49,69 @@ const theme = createTheme({
   components: {
     MuiButton: {
       styleOverrides: {
+        root: {
+          "&:focus": {
+            outline: "none",
+            boxShadow: "0 0 0 3px rgba(239, 68, 68, 0.3)", // Soft red glow
+          },
+        },
         outlinedError: {
           "&:hover": {
-            backgroundColor: "#FFE6E6", // Soft red background
+            backgroundColor: "#FFE6E6",
             borderColor: "#D32F2F",
             color: "#D32F2F",
           },
         },
         containedError: {
           "&:hover": {
-            backgroundColor: "#B71C1C", // Darker red
+            backgroundColor: "#B71C1C",
+          },
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          "&.Mui-focused": {
+            color: "#EF4444",
+          },
+          "&.Mui-error": {
+            color: "#EF4444",
+          },
+        },
+      },
+    },
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          "&:focus": {
+            outline: "none",
+            boxShadow: "0 0 0 3px rgba(250, 204, 21, 0.3)", // warm yellow glow
+          },
+          "&:hover": {
+            backgroundColor: "rgba(250, 204, 21, 0.15)", // translucent yellow hover
+          },
+        },
+      },
+    },
+    MuiPickersDay: {
+      styleOverrides: {
+        root: {
+          "&.Mui-selected": {
+            backgroundColor: "#EF4444 !important",
+            color: "#fff",
+            boxShadow: "none",
+            outline: "none",
+          },
+          "&.Mui-selected:hover": {
+            backgroundColor: "#d73636 !important",
+          },
+          "&.MuiPickersDay-today": {
+            border: "1px solid #EF4444 !important",
+          },
+          "&.Mui-focusVisible": {
+            outline: "none",
+            boxShadow: "none",
           },
         },
       },

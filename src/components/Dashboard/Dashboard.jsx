@@ -1,21 +1,40 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Box, useTheme } from "@mui/material";
+
+import axios from "../../utils/axiosInstance";
 
 import HeaderActions from "./DashboardComponents/HeaderActions";
 import DashboardTable from "./DashboardComponents/DashboardTable";
-import PaginationControls from "./DashboardComponents/PaginationControls";
 import DashboardModals from "./DashboardComponents/DashboardModals";
 import FilterDialog from "./DashboardComponents/DataTableUtilities/FilterDialog";
 
-import axios from "../../utils/axiosInstance";
+import ProgressModal from "./../ProgressModal";
+import SuccessErrorModal from "./../SuccessErrorModal";
 
 const Dashboard = ({ user }) => {
   const theme = useTheme();
 
   const [openModal, setOpenModal] = useState("");
   const [activeRow, setActiveRow] = useState(null);
+
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [progressLoading, setProgressLoading] = useState(false);
+
+  const [resultModal, setResultModal] = useState({
+    open: false,
+    type: "success",
+    message: "",
+  });
+
+  const showResultModal = (type, message) => {
+    setResultModal({
+      open: true,
+      type,
+      message,
+    });
+  };
 
   const [pagination, setPagination] = useState({
     page: 1,
@@ -79,43 +98,40 @@ const Dashboard = ({ user }) => {
     ],
   };
 
-  const selectedHeaders = headers[user.product_line];
+  const selectedHeaders = useMemo(
+    () => headers[user.product_line],
+    [user.product_line]
+  );
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
+    fetchRecruitmentData();
+  }, [pagination.page, pagination.limit]);
 
-        const response = await axios.post(
-          "/dashboard/fetchRecruitmentLists.json",
-          {
-            page: pagination.page,
-            limit: pagination.limit,
-          }
-        );
+  const fetchRecruitmentData = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        "/dashboard/fetchRecruitmentLists.json",
+        {
+          page: pagination.page,
+          limit: pagination.limit,
+          // add filters here later if needed
+        }
+      );
 
-        const { data, pagination: meta } = response.data;
-        setData(data);
+      const { data, pagination: meta } = response.data;
 
-        const total = meta.total;
-        const limit = pagination.limit || 10;
-        const maxPage = Math.max(1, Math.ceil(total / limit));
-        const currentPage = Math.min(pagination.page, maxPage);
-
-        setPagination((prev) => ({
-          ...prev,
-          total,
-          page: currentPage,
-          limit,
-        }));
-      } catch (error) {
-        console.error("Error fetching recruitment data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [pagination.page, pagination.limit, user]);
+      setData(data);
+      setPagination((prev) => ({
+        ...prev,
+        total: meta.total || 0,
+      }));
+    } catch (error) {
+      console.error("Error fetching recruitment data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleActionClick = (type, row) => {
     setActiveRow(row);
@@ -132,12 +148,38 @@ const Dashboard = ({ user }) => {
   };
 
   const handleSaveHandlers = {
-    date: (date, row) => {
-      console.log("Saved Date Visited:", date, row);
+    date: async (data, row) => {
+      try {
+        const payload = { data };
+        setProgressLoading(true);
+
+        const response = await axios.post(
+          "/dashboard/saveDateVisited.json",
+          payload
+        );
+        if (response.data?.success) {
+          showResultModal("success", response.data.message);
+          fetchRecruitmentData();
+        } else {
+          showResultModal(
+            "error",
+            response.data?.message || "Failed to save Date of Visit."
+          );
+        }
+      } catch (err) {
+        showResultModal(
+          "error",
+          "Something went wrong while saving Date of Visit."
+        );
+      } finally {
+        setProgressLoading(false);
+      }
     },
+
     recruit: (data, row) => {
       console.log("Saved Recruitment:", data, row);
     },
+
     bags: (data, row) => {
       console.log("Saved Bags Purchased:", data, row);
     },
@@ -148,21 +190,16 @@ const Dashboard = ({ user }) => {
       <HeaderActions
         onFilterClick={() => setFilterModalOpen(true)}
         onExportClick={handleExportCSV}
+        loading={loading}
       />
 
       <DashboardTable
         data={data}
-        selectedHeaders={selectedHeaders}
         user={user}
         onAction={handleActionClick}
         loading={loading}
-      />
-
-      <PaginationControls
         pagination={pagination}
         setPagination={setPagination}
-        total={pagination.total}
-        loading={loading}
       />
 
       <DashboardModals
@@ -179,6 +216,15 @@ const Dashboard = ({ user }) => {
         filters={filters}
         setFilters={setFilters}
         options={filterOptions}
+      />
+
+      <ProgressModal open={progressLoading} message="Saving Record..." />
+
+      <SuccessErrorModal
+        open={resultModal.open}
+        type={resultModal.type}
+        message={resultModal.message}
+        onClose={() => setResultModal({ ...resultModal, open: false })}
       />
     </Box>
   );

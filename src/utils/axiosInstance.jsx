@@ -11,6 +11,7 @@ const axiosInstance = axios.create({
   },
 });
 
+// Request interceptor: adds token
 axiosInstance.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -18,16 +19,5 @@ axiosInstance.interceptors.request.use((config) => {
   }
   return config;
 });
-
-axiosInstance.interceptors.response.use(
-  (response) => {
-    const accessToken = response.headers["access-token"];
-    if (accessToken) {
-      localStorage.setItem("token", accessToken);
-    }
-    return response;
-  },
-  (error) => Promise.reject(error)
-);
 
 export default axiosInstance;

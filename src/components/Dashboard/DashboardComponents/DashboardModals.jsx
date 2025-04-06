@@ -8,8 +8,8 @@ const DashboardModals = ({ openModal, row, onClose, onSaveHandlers }) => {
       <DateVisitedModal
         open={openModal === "date"}
         onClose={onClose}
-        onSave={(date) => {
-          onSaveHandlers.date(date, row);
+        onSave={(data) => {
+          onSaveHandlers.date(data, row);
           onClose();
         }}
         row={row}

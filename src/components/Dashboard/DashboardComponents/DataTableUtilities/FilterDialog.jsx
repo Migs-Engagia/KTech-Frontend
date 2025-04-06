@@ -26,6 +26,7 @@ const FilterDialog = ({
   filters,
   setFilters,
   options,
+  loading,
 }) => {
   return (
     <Dialog
@@ -37,7 +38,7 @@ const FilterDialog = ({
     >
       <DialogTitle>
         <Box display="flex" alignItems="center" gap={1}>
-          <Typography variant="h6">Filter Raiser Data</Typography>
+          <Typography variant="h6">Filter Raiser Table</Typography>
         </Box>
       </DialogTitle>
       <DialogContent dividers>
