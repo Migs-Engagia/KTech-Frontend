@@ -11,9 +11,11 @@ import FilterDialog from "./DashboardComponents/DataTableUtilities/FilterDialog"
 import ProgressModal from "./../ProgressModal";
 import SuccessErrorModal from "./../SuccessErrorModal";
 
+import { useNavigate } from "react-router-dom";
 const Dashboard = ({ user }) => {
   const theme = useTheme();
 
+  const navigate = useNavigate();
   const [openModal, setOpenModal] = useState("");
   const [activeRow, setActiveRow] = useState(null);
 
@@ -127,6 +129,11 @@ const Dashboard = ({ user }) => {
         total: meta.total || 0,
       }));
     } catch (error) {
+      if (error.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/signin");
+      }
       console.error("Error fetching recruitment data:", error);
     } finally {
       setLoading(false);
@@ -176,8 +183,31 @@ const Dashboard = ({ user }) => {
       }
     },
 
-    recruit: (data, row) => {
-      console.log("Saved Recruitment:", data, row);
+    recruit: async (data, row) => {
+      try {
+        const payload = { data };
+        setProgressLoading(true);
+
+        const response = await axios.post(
+          "/dashboard/saveRecruitmentStatus.json",
+          payload
+        );
+
+        if (response.data?.success) {
+          showResultModal("success", response.data.message);
+          fetchRecruitmentData();
+        } else {
+          showResultModal(
+            "error",
+            response.data?.message || "Failed to save recruitment."
+          );
+        }
+      } catch (err) {
+        console.log(err);
+        showResultModal("error", err.response.data.message);
+      } finally {
+        setProgressLoading(false);
+      }
     },
 
     bags: (data, row) => {

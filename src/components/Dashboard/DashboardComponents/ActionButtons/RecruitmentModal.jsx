@@ -62,12 +62,16 @@ const RecruitmentModal = ({ open, onClose, onSave, row }) => {
   };
 
   const handleConfirmSave = () => {
-    onSave({
-      status,
-      remarks,
-      recruitDate: recruitDate ? dayjs(recruitDate).format("YYYY-MM-DD") : "",
-      freeItems,
-    });
+    const recruitment = {
+      ...row,
+      recruitmentStatus: status,
+      recruitmentDate: recruitDate
+        ? dayjs(recruitDate).format("YYYY-MM-DD")
+        : "",
+      remarks: remarks,
+      freeItems: freeItems,
+    };
+    onSave(recruitment);
     setShowConfirm(false);
     onClose();
   };

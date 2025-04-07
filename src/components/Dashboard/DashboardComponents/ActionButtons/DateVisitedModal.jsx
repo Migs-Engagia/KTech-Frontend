@@ -20,7 +20,7 @@ const DateVisitedModal = ({ open, onClose, onSave, row }) => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [isQualityRaiser, setIsQualityRaiser] = useState(false);
   const [touchedSave, setTouchedSave] = useState(false);
-  const [dateOfInput, setDateOfInput] = useState(null);
+  const [dateOfVisitInput, setDateOfVisitInput] = useState(null);
   const [isAlreadyVisited, setIsAlreadyVisited] = useState(false);
   const showError = touchedSave && !date;
 
@@ -32,7 +32,7 @@ const DateVisitedModal = ({ open, onClose, onSave, row }) => {
       setIsAlreadyVisited(alreadyVisited);
 
       setDate(alreadyVisited ? dayjs(row.dateOfVisit) : null);
-      setDateOfInput(
+      setDateOfVisitInput(
         alreadyVisited
           ? row.dateOfVisitInput
           : dayjs().format("YYYY-MM-DD HH:mm:ss")
@@ -52,7 +52,7 @@ const DateVisitedModal = ({ open, onClose, onSave, row }) => {
     const visit = {
       ...row,
       dateOfVisit: date.format("YYYY-MM-DD HH:mm:ss"),
-      dateOfInput,
+      dateOfVisitInput,
     };
     onSave(visit);
     setShowConfirm(false);
@@ -104,7 +104,7 @@ const DateVisitedModal = ({ open, onClose, onSave, row }) => {
                       Date of Input
                     </Typography>
                     <Typography variant="body1" fontWeight={500}>
-                      {dayjs(dateOfInput).format("MMMM D, YYYY • h:mm A")}
+                      {dayjs(dateOfVisitInput).format("MMMM D, YYYY • h:mm A")}
                     </Typography>
                   </Box>
                 </Box>
@@ -125,7 +125,9 @@ const DateVisitedModal = ({ open, onClose, onSave, row }) => {
                     value={date}
                     onChange={(newValue) => {
                       setDate(newValue);
-                      setDateOfInput(dayjs().format("YYYY-MM-DD HH:mm:ss"));
+                      setDateOfVisitInput(
+                        dayjs().format("YYYY-MM-DD HH:mm:ss")
+                      );
                     }}
                     minDate={
                       row?.lkDateCreated ? dayjs(row.lkDateCreated) : undefined
@@ -163,8 +165,8 @@ const DateVisitedModal = ({ open, onClose, onSave, row }) => {
                     {showError ? "Please select a valid date." : " "}
                   </Typography>
                   <Typography variant="caption">
-                    {dateOfInput
-                      ? dayjs(dateOfInput).format("MMM D, YYYY • h:mm A")
+                    {dateOfVisitInput
+                      ? dayjs(dateOfVisitInput).format("MMM D, YYYY • h:mm A")
                       : ""}
                   </Typography>
                 </Box>
