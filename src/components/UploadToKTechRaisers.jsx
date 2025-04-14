@@ -50,7 +50,7 @@ const UploadToKtechRaisers = ({
     uploadedRef.current = 0;
 
     try {
-      const res = await axios.get("/ktech-raisers/countKtechToUpload.json");
+      const res = await axios.get("/KTechRaisers/countKtechToUpload.json");
       if (res.data?.success) {
         const count = res.data.count;
         setTotal(count);
@@ -79,7 +79,7 @@ const UploadToKtechRaisers = ({
 
     try {
       const res = await axios.post(
-        "/ktech-raisers/upload-from-answered-forms.json",
+        "/KTechRaisers/upload-from-answered-forms.json",
         {
           limit: BATCH_SIZE,
           last_id: lastId,

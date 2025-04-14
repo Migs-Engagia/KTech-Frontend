@@ -127,12 +127,12 @@ const Dashboard = ({ user }) => {
         }
       );
 
-      const { data, pagination: meta } = response.data;
+      const { data } = response.data;
 
       setData(data);
       setPagination((prev) => ({
         ...prev,
-        total: meta.total || 0,
+        total: response?.data?.pagination?.total || 0,
       }));
     } catch (error) {
       if (error.status === 401) {
