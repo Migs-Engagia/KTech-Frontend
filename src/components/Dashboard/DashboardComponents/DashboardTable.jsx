@@ -4,7 +4,7 @@ import TodayIcon from "@mui/icons-material/Today";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
-
+import HowToRegIcon from "@mui/icons-material/HowToReg";
 const DashboardTable = ({
   data,
   user,
@@ -68,30 +68,43 @@ const DashboardTable = ({
             title={
               params?.row?.customerVisited
                 ? `${params.row.raiserName} is visited`
-                : "Set Date Visited"
+                : "Set Date of Visit"
             }
             arrow
           >
-            <IconButton
-              color="info"
-              onClick={() => onAction("date", params.row)}
-              disabled={loading}
-            >
-              {params?.row?.customerVisited ? (
-                <EventAvailableIcon />
-              ) : (
-                <TodayIcon />
-              )}
-            </IconButton>
+            <span>
+              <IconButton
+                color="info"
+                onClick={() => onAction("date", params.row)}
+                disabled={loading}
+              >
+                {params?.row?.customerVisited ? (
+                  <EventAvailableIcon />
+                ) : (
+                  <TodayIcon />
+                )}
+              </IconButton>
+            </span>
           </Tooltip>
-          <Tooltip title="Recruitment Status" arrow>
+          <Tooltip
+            title={
+              params?.row?.recruitmentStatus === 2
+                ? `${params.row.raiserName} is recruited`
+                : "Recruitment Status"
+            }
+            arrow
+          >
             <span>
               <IconButton
                 color="success"
                 onClick={() => onAction("recruit", params.row)}
                 disabled={!params?.row?.customerVisited || loading}
               >
-                <PersonAddAlt1Icon />
+                {params?.row?.recruitmentStatus === 2 ? (
+                  <HowToRegIcon />
+                ) : (
+                  <PersonAddAlt1Icon />
+                )}
               </IconButton>
             </span>
           </Tooltip>

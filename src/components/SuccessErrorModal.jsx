@@ -47,7 +47,7 @@ const SuccessErrorModal = ({ open, onClose, type, message }) => {
           onClick={onClose}
           variant="contained"
           color={isSuccess ? "success" : "error"}
-          sx={{ textTransform: "none", borderRadius: 2 }}
+          sx={{ textTransform: "none", borderRadius: 1 }}
         >
           Confirm
         </Button>

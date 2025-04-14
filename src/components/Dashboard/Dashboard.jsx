@@ -10,6 +10,7 @@ import FilterDialog from "./DashboardComponents/DataTableUtilities/FilterDialog"
 
 import ProgressModal from "./../ProgressModal";
 import SuccessErrorModal from "./../SuccessErrorModal";
+import UploadToKtechRaisers from "./../UploadToKtechRaisers";
 
 import { useNavigate } from "react-router-dom";
 const Dashboard = ({ user }) => {
@@ -23,6 +24,7 @@ const Dashboard = ({ user }) => {
   const [loading, setLoading] = useState(true);
 
   const [progressLoading, setProgressLoading] = useState(false);
+  const [uploadFormRecords, setUploadFormRecords] = useState(false);
 
   const [resultModal, setResultModal] = useState({
     open: false,
@@ -106,8 +108,12 @@ const Dashboard = ({ user }) => {
   );
 
   useEffect(() => {
-    fetchRecruitmentData();
-  }, [pagination.page, pagination.limit]);
+    const upload_form_records = localStorage.getItem("upload_form_records");
+    setUploadFormRecords(upload_form_records);
+    if (upload_form_records === "false") {
+      fetchRecruitmentData();
+    }
+  }, [pagination.page, pagination.limit, uploadFormRecords]);
 
   const fetchRecruitmentData = async () => {
     try {
@@ -203,15 +209,44 @@ const Dashboard = ({ user }) => {
           );
         }
       } catch (err) {
-        console.log(err);
         showResultModal("error", err.response.data.message);
       } finally {
         setProgressLoading(false);
       }
     },
 
-    bags: (data, row) => {
-      console.log("Saved Bags Purchased:", data, row);
+    bags: async (data, row) => {
+      try {
+        const payload = {
+          id: row.id,
+          bags_per_month: data.bagsPerMonth,
+        };
+
+        setProgressLoading(true);
+
+        const response = await axios.post(
+          "/dashboard/saveMonthlyBags.json",
+          payload
+        );
+
+        if (response.data?.success) {
+          showResultModal("success", response.data.message || "Bags saved.");
+          fetchRecruitmentData();
+        } else {
+          showResultModal(
+            "error",
+            response.data?.message || "Failed to save bags purchased."
+          );
+        }
+      } catch (err) {
+        showResultModal(
+          "error",
+          err?.response?.data?.message ||
+            "Something went wrong while saving bags."
+        );
+      } finally {
+        setProgressLoading(false);
+      }
     },
   };
 
@@ -255,6 +290,12 @@ const Dashboard = ({ user }) => {
         type={resultModal.type}
         message={resultModal.message}
         onClose={() => setResultModal({ ...resultModal, open: false })}
+      />
+
+      <UploadToKtechRaisers
+        showResultModal={showResultModal}
+        uploadFormRecords={uploadFormRecords}
+        setUploadFormRecords={setUploadFormRecords}
       />
     </Box>
   );

@@ -181,7 +181,7 @@ const DateVisitedModal = ({ open, onClose, onSave, row }) => {
 
         <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button onClick={handleClose} variant="outlined" color="error">
-            Cancel
+            Close
           </Button>
           {!isAlreadyVisited && isQualityRaiser && (
             <Button

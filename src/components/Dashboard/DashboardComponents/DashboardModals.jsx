@@ -17,12 +17,12 @@ const DashboardModals = ({ openModal, row, onClose, onSaveHandlers }) => {
 
       <RecruitmentModal
         open={openModal === "recruit"}
+        row={row}
         onClose={onClose}
         onSave={(data) => {
           onSaveHandlers.recruit(data, row);
           onClose();
         }}
-        row={row}
       />
 
       <BagsPurchasedModal
