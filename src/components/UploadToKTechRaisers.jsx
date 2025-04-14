@@ -9,7 +9,7 @@ import {
   Button,
   Box,
 } from "@mui/material";
-import axios from "./../utils/axiosInstance";
+import axios from "../utils/axiosInstance";
 
 const UploadToKtechRaisers = ({
   showResultModal,

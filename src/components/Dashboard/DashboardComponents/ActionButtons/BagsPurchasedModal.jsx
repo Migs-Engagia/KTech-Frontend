@@ -12,7 +12,7 @@ import {
   CircularProgress,
   Tooltip,
 } from "@mui/material";
-import axios from "./../../../../utils/axiosInstance";
+import axios from "../../../../utils/axiosInstance";
 import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 

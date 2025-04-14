@@ -1,7 +1,7 @@
 // src/hooks/useAxiosInterceptor.js
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../utils/axiosInstance";
+import axiosInstance from "./axiosInstance";
 
 const useAxiosInterceptor = () => {
   const navigate = useNavigate();
