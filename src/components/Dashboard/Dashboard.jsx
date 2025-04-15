@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Box, useTheme } from "@mui/material";
+import { Box, useTheme, Tooltip, Fab } from "@mui/material";
 
 import axios from "../../utils/axiosInstance";
 
@@ -11,6 +11,8 @@ import FilterDialog from "./DashboardComponents/DataTableUtilities/FilterDialog"
 import ProgressModal from "./../ProgressModal";
 import SuccessErrorModal from "./../SuccessErrorModal";
 import UploadToKtechRaisers from "./../UploadToKtechRaisers";
+
+import UploadIcon from "@mui/icons-material/CloudUpload";
 
 import { useNavigate } from "react-router-dom";
 const Dashboard = ({ user }) => {
@@ -24,7 +26,7 @@ const Dashboard = ({ user }) => {
   const [loading, setLoading] = useState(true);
 
   const [progressLoading, setProgressLoading] = useState(false);
-  const [uploadFormRecords, setUploadFormRecords] = useState(false);
+  const [uploadFormRecords, setUploadFormRecords] = useState(null);
 
   const [resultModal, setResultModal] = useState({
     open: false,
@@ -108,9 +110,12 @@ const Dashboard = ({ user }) => {
   );
 
   useEffect(() => {
-    const upload_form_records = localStorage.getItem("upload_form_records");
-    setUploadFormRecords(upload_form_records);
-    if (upload_form_records === "false") {
+    if (uploadFormRecords === null) {
+      const upload_form_records = localStorage.getItem("upload_form_records");
+      setUploadFormRecords(upload_form_records);
+    }
+
+    if (uploadFormRecords === "false" || uploadFormRecords === false) {
       fetchRecruitmentData();
     }
   }, [pagination.page, pagination.limit, uploadFormRecords]);
@@ -250,6 +255,15 @@ const Dashboard = ({ user }) => {
     },
   };
 
+  const handleMarkAsUploaded = async () => {
+    setUploadFormRecords("true");
+    setPagination({
+      page: 1,
+      limit: 10,
+      total: 0,
+    });
+  };
+
   return (
     <Box sx={{ p: 3 }}>
       <HeaderActions
@@ -297,6 +311,24 @@ const Dashboard = ({ user }) => {
         uploadFormRecords={uploadFormRecords}
         setUploadFormRecords={setUploadFormRecords}
       />
+
+      <Tooltip title="Fetch New Records">
+        <span>
+          <Fab
+            disabled={loading}
+            color="primary"
+            sx={{
+              position: "fixed",
+              bottom: 24,
+              right: 24,
+              zIndex: 1000,
+            }}
+            onClick={handleMarkAsUploaded}
+          >
+            <UploadIcon />
+          </Fab>
+        </span>
+      </Tooltip>
     </Box>
   );
 };

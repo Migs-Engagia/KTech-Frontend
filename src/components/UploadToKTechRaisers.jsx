@@ -35,8 +35,7 @@ const UploadToKtechRaisers = ({
     if (uploadFormRecords === true || uploadFormRecords === "true") {
       const run = async () => {
         await startUpload();
-        setUploadFormRecords(false);
-        localStorage.setItem("upload_form_records", "false");
+        setUploadFormRecords("false");
       };
       run();
     }
@@ -152,16 +151,6 @@ const UploadToKtechRaisers = ({
           Uploading records... {uploaded} / {total ?? "?"}
         </Typography>
       </DialogContent>
-      <DialogActions>
-        {/* <Button
-          onClick={cancelUpload}
-          color="error"
-          variant="contained"
-          fullWidth
-        >
-          Cancel Upload
-        </Button> */}
-      </DialogActions>
     </Dialog>
   );
 };
