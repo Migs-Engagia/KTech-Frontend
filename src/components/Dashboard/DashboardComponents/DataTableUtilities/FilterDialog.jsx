@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -28,6 +28,18 @@ const FilterDialog = ({
   options,
   loading,
 }) => {
+  const [pendingFilters, setPendingFilters] = useState({
+    province: "All",
+    city: "All",
+    municipality: "All",
+    qualityRaiser: "All",
+    visited: "All",
+  });
+
+  const handleApply = () => {
+    setFilters(pendingFilters);
+    onApply();
+  };
   return (
     <Dialog
       open={open}
@@ -52,9 +64,12 @@ const FilterDialog = ({
                 label="Province"
                 select
                 fullWidth
-                value={filters.province}
+                value={pendingFilters.province}
                 onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, province: e.target.value }))
+                  setPendingFilters((prev) => ({
+                    ...prev,
+                    province: e.target.value,
+                  }))
                 }
                 InputProps={{
                   startAdornment: (
@@ -76,9 +91,12 @@ const FilterDialog = ({
                 label="City"
                 select
                 fullWidth
-                value={filters.city}
+                value={pendingFilters.city}
                 onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, city: e.target.value }))
+                  setPendingFilters((prev) => ({
+                    ...prev,
+                    city: e.target.value,
+                  }))
                 }
                 InputProps={{
                   startAdornment: (
@@ -100,9 +118,9 @@ const FilterDialog = ({
                 label="Municipality"
                 select
                 fullWidth
-                value={filters.municipality}
+                value={pendingFilters.municipality}
                 onChange={(e) =>
-                  setFilters((prev) => ({
+                  setPendingFilters((prev) => ({
                     ...prev,
                     municipality: e.target.value,
                   }))
@@ -136,12 +154,11 @@ const FilterDialog = ({
                 label="Quality Raiser"
                 select
                 fullWidth
-                value={filters.qualityRaiser}
+                value={pendingFilters.qualityRaiser}
                 onChange={(e) =>
-                  setFilters((prev) => ({
+                  setPendingFilters((prev) => ({
                     ...prev,
                     qualityRaiser: e.target.value,
-                    visited: "",
                   }))
                 }
                 InputProps={{
@@ -161,9 +178,12 @@ const FilterDialog = ({
                 label="Visited"
                 select
                 fullWidth
-                value={filters.visited}
+                value={pendingFilters.visited}
                 onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, visited: e.target.value }))
+                  setPendingFilters((prev) => ({
+                    ...prev,
+                    visited: e.target.value,
+                  }))
                 }
                 InputProps={{
                   startAdornment: (
@@ -186,7 +206,7 @@ const FilterDialog = ({
         <Button onClick={onClose} variant="outlined" color="error">
           Cancel
         </Button>
-        <Button variant="contained" onClick={onApply}>
+        <Button variant="contained" onClick={handleApply}>
           Apply Filters
         </Button>
       </DialogActions>

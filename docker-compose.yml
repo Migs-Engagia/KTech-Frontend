@@ -11,6 +11,7 @@ services:
       - /app/node_modules # Prevents overwriting node_modules
     environment:
       - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
     restart: unless-stopped
     command: ["npm", "run", "dev", "--", "--host"]
     networks:

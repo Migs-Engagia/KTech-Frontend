@@ -27,6 +27,7 @@ const Dashboard = ({ user }) => {
 
   const [progressLoading, setProgressLoading] = useState(false);
   const [uploadFormRecords, setUploadFormRecords] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [resultModal, setResultModal] = useState({
     open: false,
@@ -115,10 +116,19 @@ const Dashboard = ({ user }) => {
       setUploadFormRecords(upload_form_records);
     }
 
-    if (uploadFormRecords === "false" || uploadFormRecords === false) {
+    if (
+      (uploadFormRecords === "false" || uploadFormRecords === false) &&
+      searchQuery.length !== ""
+    ) {
       fetchRecruitmentData();
     }
-  }, [pagination.page, pagination.limit, uploadFormRecords]);
+  }, [
+    pagination.page,
+    pagination.limit,
+    uploadFormRecords,
+    searchQuery,
+    filters,
+  ]);
 
   const fetchRecruitmentData = async () => {
     try {
@@ -128,7 +138,8 @@ const Dashboard = ({ user }) => {
         {
           page: pagination.page,
           limit: pagination.limit,
-          // add filters here later if needed
+          search: searchQuery.trim(),
+          filters: filters,
         }
       );
 
@@ -159,10 +170,6 @@ const Dashboard = ({ user }) => {
   const handleCloseModal = () => {
     setOpenModal("");
     setActiveRow(null);
-  };
-
-  const handleExportCSV = () => {
-    console.log("TODO: Export CSV");
   };
 
   const handleSaveHandlers = {
@@ -268,7 +275,12 @@ const Dashboard = ({ user }) => {
     <Box sx={{ p: 3 }}>
       <HeaderActions
         onFilterClick={() => setFilterModalOpen(true)}
-        onExportClick={handleExportCSV}
+        onSearchChange={(query) => {
+          setSearchQuery(query);
+          setPagination((prev) => ({ ...prev, page: 1 }));
+        }}
+        searchQuery={searchQuery}
+        filters={filters}
         loading={loading}
       />
 

@@ -1,27 +1,54 @@
-import { Stack, Button } from "@mui/material";
+import { Stack, Button, TextField } from "@mui/material";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 
-const HeaderActions = ({ onFilterClick, onExportClick, loading }) => {
+import CsvExport from "../../../utils/CSV/CsvExport";
+const HeaderActions = ({
+  onFilterClick,
+  onSearchChange,
+  searchQuery,
+  filters,
+  loading,
+}) => {
   return (
-    <Stack direction="row" spacing={2} mb={2} justifyContent="flex-end">
-      <Button
-        variant="contained"
-        startIcon={<FilterListIcon />}
-        onClick={onFilterClick}
-        disabled={loading}
+    <>
+      <Stack
+        direction="row"
+        spacing={2}
+        mb={2}
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{ flexWrap: "wrap" }}
       >
-        Filter
-      </Button>
-      <Button
-        variant="contained"
-        startIcon={<FileDownloadIcon />}
-        onClick={onExportClick}
-        disabled={loading}
-      >
-        CSV Out
-      </Button>
-    </Stack>
+        <TextField
+          size="small"
+          variant="outlined"
+          label="Search Raiser Name"
+          onChange={(e) => onSearchChange(e.target.value)}
+          sx={{ minWidth: 250 }}
+        />
+
+        <Stack direction="row" spacing={2}>
+          <Button
+            variant="contained"
+            startIcon={<FilterListIcon />}
+            onClick={onFilterClick}
+            disabled={loading}
+          >
+            Filter
+          </Button>
+          <CsvExport
+            url="/dashboard/fetchRecruitmentListsCSV.json"
+            filename="Raisers.csv"
+            queryParams={{
+              search: searchQuery,
+              filters: filters,
+            }}
+            loading={loading}
+          />
+        </Stack>
+      </Stack>
+    </>
   );
 };
 
