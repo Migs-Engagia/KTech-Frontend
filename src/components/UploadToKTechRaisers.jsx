@@ -36,6 +36,7 @@ const UploadToKtechRaisers = ({
       const run = async () => {
         await startUpload();
         setUploadFormRecords("false");
+        localStorage.setItem("upload_form_records", "false");
       };
       run();
     }
