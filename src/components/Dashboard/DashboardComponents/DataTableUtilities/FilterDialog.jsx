@@ -1,4 +1,5 @@
-import { useState } from "react";
+import axios from "../../../../utils/axiosInstance";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -11,13 +12,13 @@ import {
   Typography,
   Divider,
   Box,
-  Collapse,
   InputAdornment,
 } from "@mui/material";
 
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const FilterDialog = ({
   open,
@@ -25,21 +26,43 @@ const FilterDialog = ({
   onApply,
   filters,
   setFilters,
-  options,
-  loading,
+  filterOptions,
+  setFilterOptions,
 }) => {
   const [pendingFilters, setPendingFilters] = useState({
     province: "All",
     city: "All",
-    municipality: "All",
     qualityRaiser: "All",
     visited: "All",
   });
+
+  const [loadingFilters, setLoadingFilters] = useState(false);
 
   const handleApply = () => {
     setFilters(pendingFilters);
     onApply();
   };
+
+  useEffect(() => {
+    if (open && filterOptions?.cities?.length === 0) {
+      fetchFilterOptions();
+    }
+  }, [open]);
+
+  const fetchFilterOptions = async () => {
+    // setLoading(true);
+    setLoadingFilters(true);
+    try {
+      const response = await axios.get("/dashboard/fetchFilterOptions.json");
+      const { data } = response.data;
+      setFilterOptions(data);
+    } catch (error) {
+      console.error("Error fetching filter options:", error);
+    } finally {
+      setLoadingFilters(false);
+    }
+  };
+
   return (
     <Dialog
       open={open}
@@ -56,14 +79,27 @@ const FilterDialog = ({
       <DialogContent dividers>
         <Stack spacing={3}>
           <Box>
-            <Typography variant="subtitle1" gutterBottom sx={{ mb: 2 }}>
-              Province, City and Municipality
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              sx={{ mb: 2 }}
+              display="flex"
+              alignItems="center"
+              gap={1}
+            >
+              {loadingFilters && (
+                <>
+                  <CircularProgress size={16} />
+                </>
+              )}
+              Province, City or Municipality
             </Typography>
             <Stack spacing={2}>
               <TextField
                 label="Province"
                 select
                 fullWidth
+                disabled={loadingFilters}
                 value={pendingFilters.province}
                 onChange={(e) =>
                   setPendingFilters((prev) => ({
@@ -80,7 +116,7 @@ const FilterDialog = ({
                 }}
               >
                 <MenuItem value="All">All</MenuItem>
-                {options.provinces.map((prov) => (
+                {filterOptions.provinces.map((prov) => (
                   <MenuItem key={prov} value={prov}>
                     {prov}
                   </MenuItem>
@@ -88,10 +124,11 @@ const FilterDialog = ({
               </TextField>
 
               <TextField
-                label="City"
+                label="City/Municipality"
                 select
                 fullWidth
                 value={pendingFilters.city}
+                disabled={loadingFilters}
                 onChange={(e) =>
                   setPendingFilters((prev) => ({
                     ...prev,
@@ -107,36 +144,9 @@ const FilterDialog = ({
                 }}
               >
                 <MenuItem value="All">All</MenuItem>
-                {options.cities.map((city) => (
+                {filterOptions.cities.map((city) => (
                   <MenuItem key={city} value={city}>
                     {city}
-                  </MenuItem>
-                ))}
-              </TextField>
-
-              <TextField
-                label="Municipality"
-                select
-                fullWidth
-                value={pendingFilters.municipality}
-                onChange={(e) =>
-                  setPendingFilters((prev) => ({
-                    ...prev,
-                    municipality: e.target.value,
-                  }))
-                }
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LocationOnIcon fontSize="small" />
-                    </InputAdornment>
-                  ),
-                }}
-              >
-                <MenuItem value="All">All</MenuItem>
-                {options.municipalities.map((mun) => (
-                  <MenuItem key={mun} value={mun}>
-                    {mun}
                   </MenuItem>
                 ))}
               </TextField>

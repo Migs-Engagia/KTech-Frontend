@@ -12,6 +12,7 @@ import {
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import Papa from "papaparse";
 import axios from "../axiosInstance"; // Adjust path if needed
+import SuccessErrorModal from "../../components/SuccessErrorModal";
 
 const CsvExport = ({
   url,
@@ -26,6 +27,7 @@ const CsvExport = ({
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState("");
 
+  const [noRecordsToExport, setNoRecordsToExport] = useState(false);
   const handleClick = () => {
     setOpen(true);
   };
@@ -40,7 +42,6 @@ const CsvExport = ({
 
   useEffect(() => {
     if (open) startExport();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   const startExport = async () => {
@@ -57,6 +58,11 @@ const CsvExport = ({
         const res = await axios.post(url, { page, limit, ...queryParams });
         const data = res.data?.data || [];
         const totalCount = res.data?.pagination?.total;
+
+        if (page === 1 && totalCount === 0) {
+          setNoRecordsToExport(true);
+          break;
+        }
 
         if (total === null) total = totalCount;
         if (data.length === 0) break;
@@ -125,6 +131,13 @@ const CsvExport = ({
           </Button>
         </DialogActions>
       </Dialog>
+
+      <SuccessErrorModal
+        open={noRecordsToExport}
+        type="error"
+        message={"No records to download..."}
+        onClose={() => setNoRecordsToExport(false)}
+      />
     </>
   );
 };

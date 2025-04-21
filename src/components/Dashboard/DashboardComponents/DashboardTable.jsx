@@ -18,13 +18,13 @@ const DashboardTable = ({
   const columns = [
     { field: "raiserName", headerName: "Raiser Name", flex: 1, minWidth: 150 },
     { field: "province", headerName: "Province", flex: 1, minWidth: 100 },
-    { field: "city", headerName: "City", flex: 1, minWidth: 100 },
-    {
-      field: "municipality",
-      headerName: "Municipality",
-      flex: 1,
-      minWidth: 100,
-    },
+    { field: "city", headerName: "City/Municipality", flex: 1, minWidth: 100 },
+    // {
+    //   field: "municipality",
+    //   headerName: "Municipality",
+    //   flex: 1,
+    //   minWidth: 100,
+    // },
     { field: "barangay", headerName: "Barangay", flex: 1, minWidth: 100 },
     { field: "contact", headerName: "Contact No.", flex: 1, minWidth: 130 },
 

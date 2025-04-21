@@ -57,7 +57,7 @@ const UploadToKtechRaisers = ({
 
         if (count === 0) {
           setUploading(false);
-          showResultModal("info", "No records to upload.");
+          showResultModal("success", "No records to upload.");
           return;
         }
 

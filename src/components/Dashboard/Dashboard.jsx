@@ -49,27 +49,25 @@ const Dashboard = ({ user }) => {
     total: 0,
   });
 
+  const [filterOptions, setFilterOptions] = useState({
+    provinces: [],
+    cities: [],
+    municipalities: [],
+  });
+
   const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [filters, setFilters] = useState({
     province: "All",
     city: "All",
-    municipality: "All",
     qualityRaiser: "All",
     visited: "All",
   });
-
-  const filterOptions = {
-    provinces: ["Laguna"],
-    cities: ["Calamba", "San Pedro"],
-    municipalities: ["Sta.Rosa"],
-  };
 
   const headers = {
     "Hogs/AH": [
       "Raiser Name",
       "Province",
       "City",
-      "Municipality",
       "Barangay",
       "Contact No.",
       "Boars",
@@ -88,7 +86,6 @@ const Dashboard = ({ user }) => {
       "Raiser Name",
       "Province",
       "City",
-      "Municipality",
       "Barangay",
       "Contact No.",
       "Corded",
@@ -306,7 +303,8 @@ const Dashboard = ({ user }) => {
         onApply={() => setFilterModalOpen(false)}
         filters={filters}
         setFilters={setFilters}
-        options={filterOptions}
+        filterOptions={filterOptions}
+        setFilterOptions={setFilterOptions}
       />
 
       <ProgressModal open={progressLoading} message="Saving Record..." />
