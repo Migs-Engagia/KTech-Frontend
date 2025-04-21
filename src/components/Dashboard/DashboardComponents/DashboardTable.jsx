@@ -125,7 +125,7 @@ const DashboardTable = ({
   ];
 
   const getRowClassName = (params) =>
-    params.row.qualityRaiser === true ? "quality-row" : "";
+    params?.row?.customerVisited === true ? "visited-row" : "";
 
   return (
     <Box sx={{ width: "100%", overflowX: { xs: "scroll", md: "auto" } }}>
@@ -161,7 +161,7 @@ const DashboardTable = ({
           sx={{
             minWidth: "100%",
             overflowX: "auto",
-            "& .quality-row": {
+            "& .visited-row": {
               backgroundColor: "#e8f5e9",
             },
 
