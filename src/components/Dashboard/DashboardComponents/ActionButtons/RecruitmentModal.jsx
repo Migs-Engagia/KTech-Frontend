@@ -32,6 +32,9 @@ const RecruitmentModal = ({ open, onClose, onSave, row }) => {
   const isRecruited = status === 2;
   const isAlreadyRecruited = !!row?.recruitmentDate;
 
+  const isRecruitDateBeforeLK =
+    row?.lkDateCreated && dayjs(recruitDate).isBefore(dayjs(row.lkDateCreated));
+
   const recruitDateError =
     isRecruited && touchedSave && !isAlreadyRecruited && !recruitDate;
   const remarksError = isWorkInProgress && touchedSave && !remarks.trim();
@@ -205,6 +208,11 @@ const RecruitmentModal = ({ open, onClose, onSave, row }) => {
                         label="Recruitment Date"
                         value={recruitDate}
                         onChange={(newValue) => setRecruitDate(newValue)}
+                        minDate={
+                          row?.lkDateCreated
+                            ? dayjs(row.lkDateCreated)
+                            : undefined
+                        }
                         slotProps={{
                           textField: {
                             required: true,
