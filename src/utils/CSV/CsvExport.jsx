@@ -49,11 +49,11 @@ const CsvExport = ({
     setProgress(0);
     setError("");
 
-    let allData = [];
-    let page = 1;
-    let total = null;
-
     try {
+      let allData = [];
+      let page = 1;
+      let total = null;
+
       while (true) {
         const res = await axios.post(url, { page, limit, ...queryParams });
         const data = res.data?.data || [];
@@ -61,7 +61,7 @@ const CsvExport = ({
 
         if (page === 1 && totalCount === 0) {
           setNoRecordsToExport(true);
-          break;
+          return;
         }
 
         if (total === null) total = totalCount;
