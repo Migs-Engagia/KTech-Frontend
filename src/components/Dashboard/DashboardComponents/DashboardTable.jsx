@@ -12,6 +12,8 @@ const DashboardTable = ({
   loading,
   pagination,
   setPagination,
+  sortModel,
+  setSortModel,
 }) => {
   const isHogs = user.product_line === "Hogs/AH";
 
@@ -137,6 +139,9 @@ const DashboardTable = ({
             minWidth: col.flex ? undefined : 120, // fallback for fixed-width columns
             headerClassName: "wrapped-header",
           }))}
+          sortingMode="server"
+          sortModel={sortModel}
+          onSortModelChange={setSortModel}
           getRowId={(row) => row.id}
           loading={loading}
           paginationMode="server"

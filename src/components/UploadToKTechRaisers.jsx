@@ -99,7 +99,7 @@ const UploadToKtechRaisers = ({
           setUploading(false);
           showResultModal(
             "success",
-            `Upload completed (${newUploaded} records uploaded).`
+            `Sync completed (${newUploaded} records synced).`
           );
         } else {
           await new Promise((r) => setTimeout(r, 200));
@@ -125,7 +125,7 @@ const UploadToKtechRaisers = ({
 
   return (
     <Dialog open={uploading} maxWidth="xs" fullWidth>
-      <DialogTitle>Uploading Records</DialogTitle>
+      <DialogTitle>Syncing Records</DialogTitle>
       <DialogContent sx={{ textAlign: "center" }}>
         <Box position="relative" display="inline-flex" mt={1} mb={2}>
           <CircularProgress
@@ -149,7 +149,7 @@ const UploadToKtechRaisers = ({
           </Box>
         </Box>
         <Typography variant="subtitle1">
-          Uploading records... {uploaded} / {total ?? "?"}
+          Syncing records... {uploaded} / {total ?? "?"}
         </Typography>
       </DialogContent>
     </Dialog>

@@ -9,6 +9,7 @@ const HeaderActions = ({
   searchQuery,
   filters,
   loading,
+  sortModel,
 }) => {
   return (
     <>
@@ -43,6 +44,7 @@ const HeaderActions = ({
             queryParams={{
               search: searchQuery,
               filters: filters,
+              sort: sortModel[0] || {},
             }}
             loading={loading}
           />

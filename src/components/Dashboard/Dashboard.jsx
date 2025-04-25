@@ -23,6 +23,7 @@ const Dashboard = ({ user }) => {
   const [activeRow, setActiveRow] = useState(null);
 
   const [data, setData] = useState([]);
+  const [sortModel, setSortModel] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [progressLoading, setProgressLoading] = useState(false);
@@ -125,6 +126,7 @@ const Dashboard = ({ user }) => {
     uploadFormRecords,
     searchQuery,
     filters,
+    sortModel,
   ]);
 
   const fetchRecruitmentData = async () => {
@@ -137,6 +139,7 @@ const Dashboard = ({ user }) => {
           limit: pagination.limit,
           search: searchQuery.trim(),
           filters: filters,
+          sort: sortModel[0] || {},
         }
       );
 
@@ -157,6 +160,10 @@ const Dashboard = ({ user }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSortModelChange = (model) => {
+    setSortModel(model);
   };
 
   const handleActionClick = (type, row) => {
@@ -279,6 +286,7 @@ const Dashboard = ({ user }) => {
         searchQuery={searchQuery}
         filters={filters}
         loading={loading}
+        sortModel={sortModel}
       />
 
       <DashboardTable
@@ -288,6 +296,8 @@ const Dashboard = ({ user }) => {
         loading={loading}
         pagination={pagination}
         setPagination={setPagination}
+        sortModel={sortModel}
+        setSortModel={handleSortModelChange}
       />
 
       <DashboardModals
@@ -322,23 +332,19 @@ const Dashboard = ({ user }) => {
         setUploadFormRecords={setUploadFormRecords}
       />
 
-      <Tooltip title="Fetch New Records">
-        <span>
-          <Fab
-            disabled={loading}
-            color="primary"
-            sx={{
-              position: "fixed",
-              bottom: 24,
-              right: 24,
-              zIndex: 1000,
-            }}
-            onClick={handleMarkAsUploaded}
-          >
-            <UploadIcon />
-          </Fab>
-        </span>
-      </Tooltip>
+      <Fab
+        disabled={loading}
+        color="primary"
+        sx={{
+          position: "fixed",
+          bottom: 24,
+          right: 24,
+          zIndex: 1000,
+        }}
+        onClick={handleMarkAsUploaded}
+      >
+        <UploadIcon />
+      </Fab>
     </Box>
   );
 };
