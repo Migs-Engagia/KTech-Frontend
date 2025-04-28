@@ -112,7 +112,6 @@ const DashboardTable = ({
           </Tooltip>
           <Tooltip title="Bags Purchased" arrow>
             <span>
-              {console.log(params?.row?.recruitmentStatus)}
               <IconButton
                 color="warning"
                 onClick={() => onAction("bags", params.row)}
