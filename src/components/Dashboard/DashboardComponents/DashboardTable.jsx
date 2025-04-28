@@ -112,10 +112,15 @@ const DashboardTable = ({
           </Tooltip>
           <Tooltip title="Bags Purchased" arrow>
             <span>
+              {console.log(params?.row?.recruitmentStatus)}
               <IconButton
                 color="warning"
                 onClick={() => onAction("bags", params.row)}
-                disabled={!params?.row?.customerVisited || loading}
+                disabled={
+                  !params?.row?.customerVisited ||
+                  params?.row?.recruitmentStatus !== 2 ||
+                  loading
+                }
               >
                 <LocalMallIcon />
               </IconButton>
