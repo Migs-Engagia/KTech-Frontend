@@ -8,11 +8,8 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import theme from "../theme";
-import logo from "../logo.png";
-import MenuIcon from "@mui/icons-material/Menu";
-import MainDrawer from "../components/MainDrawer";
 import Dashboard from "../components/Dashboard/Dashboard";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 
 function Layout() {
@@ -33,7 +30,7 @@ function Layout() {
   const user = JSON.parse(localStorage.getItem("user"));
 
   return (
-    <Box sx={{ display: "flex", width: "100%" }}>
+    <Box sx={{ display: "flex" }}>
       <AppBar position="fixed" sx={{ zIndex: theme.zIndex.drawer + 1 }}>
         <Toolbar>
           <Typography variant="h5" noWrap>
@@ -52,13 +49,7 @@ function Layout() {
         </Toolbar>
       </AppBar>
 
-      {/* Optional Drawer */}
-      {/* <MainDrawer
-        mobileOpen={mobileOpen}
-        handleDrawerToggle={handleDrawerToggle}
-      /> */}
-
-      <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8, width: "100%" }}>
+      <Box component="main" sx={{ flexGrow: 1, p: 6, mt: 8 }}>
         <Dashboard user={user} />
       </Box>
     </Box>
