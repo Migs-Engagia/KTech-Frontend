@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from "react";
-import { Box, useTheme, Tooltip, Fab } from "@mui/material";
+import { useState, useEffect } from "react";
+import { Box, useTheme, Fab, Typography } from "@mui/material";
 
 import axios from "../../utils/axiosInstance";
 
@@ -7,6 +7,7 @@ import HeaderActions from "./DashboardComponents/HeaderActions";
 import DashboardTable from "./DashboardComponents/DashboardTable";
 import DashboardModals from "./DashboardComponents/DashboardModals";
 import FilterDialog from "./DashboardComponents/DataTableUtilities/FilterDialog";
+import RecruitmentDashboardGuide from "./DashboardComponents/Card/RecruitmentDashboardGuide";
 
 import ProgressModal from "./../ProgressModal";
 import SuccessErrorModal from "./../SuccessErrorModal";
@@ -15,9 +16,8 @@ import UploadToKtechRaisers from "./../UploadToKtechRaisers";
 import UploadIcon from "@mui/icons-material/CloudUpload";
 
 import { useNavigate } from "react-router-dom";
-const Dashboard = ({ user }) => {
-  const theme = useTheme();
 
+const Dashboard = ({ user }) => {
   const navigate = useNavigate();
   const [openModal, setOpenModal] = useState("");
   const [activeRow, setActiveRow] = useState(null);
@@ -29,6 +29,13 @@ const Dashboard = ({ user }) => {
   const [progressLoading, setProgressLoading] = useState(false);
   const [uploadFormRecords, setUploadFormRecords] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const [metrics, setMetrics] = useState({
+    recruited: 0,
+    wip: 0,
+    qualityRaisers: 0,
+    totalRaisers: 0,
+  });
 
   const [resultModal, setResultModal] = useState({
     open: false,
@@ -64,50 +71,6 @@ const Dashboard = ({ user }) => {
     visited: "All",
   });
 
-  const headers = {
-    "Hogs/AH": [
-      "Raiser Name",
-      "Province",
-      "City",
-      "Barangay",
-      "Contact No.",
-      "Boars",
-      "Sow",
-      "Gilts",
-      "Fatteners",
-      "Total",
-      "Piglet",
-      "Existing Feed",
-      "KTech Name",
-      "LK Date Created",
-      "Quality Raiser Y/N",
-      "Action",
-    ],
-    "SGF/PET": [
-      "Raiser Name",
-      "Province",
-      "City",
-      "Barangay",
-      "Contact No.",
-      "Corded",
-      "Broodhen",
-      "Stag",
-      "Broodcock",
-      "Total",
-      "Chicks",
-      "Existing Feed",
-      "KTech Name",
-      "LK Date Created",
-      "Quality Raiser Y/N",
-      "Action",
-    ],
-  };
-
-  const selectedHeaders = useMemo(
-    () => headers[user.product_line],
-    [user.product_line]
-  );
-
   useEffect(() => {
     if (uploadFormRecords === null) {
       const upload_form_records = localStorage.getItem("upload_form_records");
@@ -119,6 +82,7 @@ const Dashboard = ({ user }) => {
       searchQuery.length !== ""
     ) {
       fetchRecruitmentData();
+      fetchDashboardMetrics();
     }
   }, [
     pagination.page,
@@ -162,6 +126,19 @@ const Dashboard = ({ user }) => {
     }
   };
 
+  const fetchDashboardMetrics = async () => {
+    try {
+      const response = await axios.get("/dashboard/fetchDashboardMetrics.json");
+
+      if (response.status === 200) {
+        const metrics = response.data.dashboard;
+        setMetrics(metrics);
+      }
+    } catch (error) {
+      console.error("Error fetching dashboard metrics", error);
+    }
+  };
+
   const handleSortModelChange = (model) => {
     setSortModel(model);
   };
@@ -189,6 +166,7 @@ const Dashboard = ({ user }) => {
         if (response.data?.success) {
           showResultModal("success", response.data.message);
           fetchRecruitmentData();
+          fetchDashboardMetrics();
         } else {
           showResultModal(
             "error",
@@ -218,6 +196,7 @@ const Dashboard = ({ user }) => {
         if (response.data?.success) {
           showResultModal("success", response.data.message);
           fetchRecruitmentData();
+          fetchDashboardMetrics();
         } else {
           showResultModal(
             "error",
@@ -248,6 +227,7 @@ const Dashboard = ({ user }) => {
         if (response.data?.success) {
           showResultModal("success", response.data.message || "Bags saved.");
           fetchRecruitmentData();
+          fetchDashboardMetrics();
         } else {
           showResultModal(
             "error",
@@ -276,7 +256,8 @@ const Dashboard = ({ user }) => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box>
+      <RecruitmentDashboardGuide metrics={metrics} />
       <HeaderActions
         onFilterClick={() => setFilterModalOpen(true)}
         onSearchChange={(query) => {
@@ -338,7 +319,7 @@ const Dashboard = ({ user }) => {
         sx={{
           position: "fixed",
           bottom: 24,
-          right: 24,
+          left: 24,
           zIndex: 1000,
         }}
         onClick={handleMarkAsUploaded}

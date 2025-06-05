@@ -99,7 +99,7 @@ const UploadToKtechRaisers = ({
           setUploading(false);
           showResultModal(
             "success",
-            `Sync completed (${newUploaded} records synced).`
+            `Sync completed (${newUploaded} record/s synced).`
           );
         } else {
           await new Promise((r) => setTimeout(r, 200));
@@ -110,14 +110,8 @@ const UploadToKtechRaisers = ({
       }
     } catch (err) {
       setUploading(false);
-      showResultModal("error", "Upload error occurred.");
+      showResultModal("error", err.message);
     }
-  };
-
-  const cancelUpload = () => {
-    abortRef.current = true;
-    setUploading(false);
-    showResultModal("info", "Upload cancelled.");
   };
 
   const getPercentage = () =>

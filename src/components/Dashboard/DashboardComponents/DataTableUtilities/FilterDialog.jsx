@@ -20,6 +20,9 @@ import HowToRegIcon from "@mui/icons-material/HowToReg";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import CircularProgress from "@mui/material/CircularProgress";
 
+import LKDateRangePicker from "./DateRangePickers/LKDateRangePicker";
+import VisitDateRangePicker from "./DateRangePickers/VisitDateRangePicker";
+import dayjs from "dayjs";
 const FilterDialog = ({
   open,
   onClose,
@@ -34,6 +37,10 @@ const FilterDialog = ({
     city: "All",
     qualityRaiser: "All",
     visited: "All",
+    lkDateCreatedFrom: "",
+    lkDateCreatedTo: "",
+    VisitDateFrom: "",
+    VisitDateTo: "",
   });
 
   const [loadingFilters, setLoadingFilters] = useState(false);
@@ -41,6 +48,19 @@ const FilterDialog = ({
   const handleApply = () => {
     setFilters(pendingFilters);
     onApply();
+  };
+
+  const clearFilters = () => {
+    setPendingFilters({
+      province: "All",
+      city: "All",
+      qualityRaiser: "All",
+      visited: "All",
+      lkDateCreatedFrom: "",
+      lkDateCreatedTo: "",
+      VisitDateFrom: "",
+      VisitDateTo: "",
+    });
   };
 
   useEffect(() => {
@@ -63,6 +83,17 @@ const FilterDialog = ({
     }
   };
 
+  const handleDisabled = () => {
+    const lkDateCreatedFrom = pendingFilters.lkDateCreatedFrom;
+    const lkDateCreatedTo = pendingFilters.lkDateCreatedTo;
+    const VisitDateFrom = pendingFilters.VisitDateFrom;
+    const VisitDateTo = pendingFilters.VisitDateTo;
+
+    const status =
+      (lkDateCreatedFrom != "" && lkDateCreatedTo === "") ||
+      (VisitDateFrom != "" && VisitDateTo === "");
+    return status;
+  };
   return (
     <Dialog
       open={open}
@@ -209,6 +240,27 @@ const FilterDialog = ({
               </TextField>
             </Stack>
           </Box>
+
+          <Divider />
+
+          <Box>
+            <Typography variant="subtitle1" gutterBottom sx={{ mb: 2 }}>
+              LK Date Created
+            </Typography>
+            <LKDateRangePicker
+              pendingFilters={pendingFilters}
+              setPendingFilters={setPendingFilters}
+            />
+          </Box>
+          <Box>
+            <Typography variant="subtitle1" gutterBottom>
+              Date Visited
+            </Typography>
+            <VisitDateRangePicker
+              pendingFilters={pendingFilters}
+              setPendingFilters={setPendingFilters}
+            />
+          </Box>
         </Stack>
       </DialogContent>
 
@@ -216,7 +268,14 @@ const FilterDialog = ({
         <Button onClick={onClose} variant="outlined" color="error">
           Cancel
         </Button>
-        <Button variant="contained" onClick={handleApply}>
+        <Button onClick={clearFilters} variant="outlined" color="error">
+          Clear Filters
+        </Button>
+        <Button
+          variant="contained"
+          onClick={handleApply}
+          disabled={handleDisabled()}
+        >
           Apply Filters
         </Button>
       </DialogActions>

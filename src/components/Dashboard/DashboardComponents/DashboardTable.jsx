@@ -1,10 +1,19 @@
 import { DataGrid } from "@mui/x-data-grid";
-import { Box, Stack, IconButton, Tooltip } from "@mui/material";
+import {
+  Box,
+  Stack,
+  IconButton,
+  Tooltip,
+  TextField,
+  Button,
+} from "@mui/material";
 import TodayIcon from "@mui/icons-material/Today";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
+import dayjs from "dayjs";
+
 const DashboardTable = ({
   data,
   user,
@@ -18,54 +27,59 @@ const DashboardTable = ({
   const isHogs = user.product_line === "Hogs/AH";
 
   const columns = [
-    { field: "raiserName", headerName: "Raiser Name", flex: 1, minWidth: 150 },
-    { field: "province", headerName: "Province", flex: 1, minWidth: 100 },
-    { field: "city", headerName: "City/Municipality", flex: 1, minWidth: 100 },
-    // {
-    //   field: "municipality",
-    //   headerName: "Municipality",
-    //   flex: 1,
-    //   minWidth: 100,
-    // },
-    { field: "barangay", headerName: "Barangay", flex: 1, minWidth: 100 },
-    { field: "contact", headerName: "Contact No.", flex: 1, minWidth: 130 },
-
+    { field: "raiserName", headerName: "Raiser Name" },
+    { field: "province", headerName: "Province" },
+    { field: "city", headerName: "City/Municipality" },
+    { field: "barangay", headerName: "Barangay" },
+    { field: "contact", headerName: "Contact No." },
     ...(isHogs
       ? [
-          { field: "boar", headerName: "Boars", flex: 0.5 },
-          { field: "sow", headerName: "Sow", flex: 0.5 },
-          { field: "gilts", headerName: "Gilts", flex: 0.5 },
-          { field: "fatteners", headerName: "Fatteners", flex: 0.5 },
-          { field: "total", headerName: "Total", flex: 0.5 },
-          { field: "piglet", headerName: "Piglet", flex: 0.5 },
+          { field: "boar", headerName: "Boars" },
+          { field: "boar_current_feeds", headerName: "Feeds" },
+          { field: "sow", headerName: "Sow" },
+          { field: "sow_current_feeds", headerName: "Feeds" },
+          { field: "gilts", headerName: "Gilts" },
+          { field: "gilt_current_feeds", headerName: "Feeds" },
+          { field: "fatteners", headerName: "Fatteners" },
+          { field: "fattener_current_feeds", headerName: "Feeds" },
+          { field: "total", headerName: "Total" },
+          { field: "piglet", headerName: "Piglet" },
+          { field: "piglet_current_feeds", headerName: "Feeds" },
         ]
       : [
-          { field: "corded", headerName: "Corded", flex: 0.5 },
-          { field: "broodhen", headerName: "Broodhen", flex: 0.5 },
-          { field: "stag", headerName: "Stag", flex: 0.5 },
-          { field: "broodcock", headerName: "Broodcock", flex: 0.5 },
-          { field: "total", headerName: "Total", flex: 0.5 },
-          { field: "chicks", headerName: "Chicks", flex: 0.5 },
+          { field: "corded", headerName: "Corded" },
+          { field: "corded_current_feeds", headerName: "Feeds" },
+          { field: "broodhen", headerName: "Broodhen" },
+          { field: "broodhen_current_feeds", headerName: "Feeds" },
+          { field: "stag", headerName: "Stag" },
+          { field: "stag_current_feeds", headerName: "Feeds" },
+          { field: "broodcock", headerName: "Broodcock" },
+          { field: "broodcock_current_feeds", headerName: "Feeds" },
+          { field: "total", headerName: "Total" },
+          { field: "chicks", headerName: "Chicks" },
+          { field: "chick_current_feeds", headerName: "Feeds" },
         ]),
-
-    { field: "existingFeed", headerName: "Existing Feed", flex: 1 },
-    { field: "ktechName", headerName: "KTech Name", flex: 1 },
-    { field: "lkDateCreated", headerName: "LK Date Created", flex: 1 },
+    { field: "ktechName", headerName: "KTech Name" },
+    { field: "lkDateCreated", headerName: "LK Date Created" },
     {
       field: "qualityRaiser",
       headerName: "Quality Raiser",
-      flex: 1,
       valueGetter: (value) => (value === true ? "Y" : "N"),
+    },
+    {
+      field: "dateOfVisit",
+      headerName: "Visit Date",
+      valueGetter: (value) =>
+        value && value.length > 0 ? dayjs(value).format("MMMM D, YYYY") : "-",
     },
     {
       field: "actions",
       headerName: "Action",
-      flex: 1.2,
       sortable: false,
       filterable: false,
       disableColumnMenu: true,
       renderCell: (params) => (
-        <Stack direction="row" spacing={1} justifyContent="center" width="100%">
+        <Stack direction="row" spacing={1} justifyContent="center">
           <Tooltip
             title={
               params?.row?.customerVisited
@@ -134,15 +148,38 @@ const DashboardTable = ({
     params?.row?.customerVisited === true ? "visited-row" : "";
 
   return (
-    <Box sx={{ width: "100%", overflowX: { xs: "scroll", md: "auto" } }}>
-      <Box sx={{ minWidth: 1200 }}>
+    <Box
+      sx={{ overflow: "auto", width: "100%", boxShadow: 2, borderRadius: 3 }}
+    >
+      <Box
+        sx={{
+          minWidth: "100%",
+          maxWidth: "1670px",
+          mx: "auto",
+          height: "650px",
+        }}
+      >
         <DataGrid
           rows={data}
-          columns={columns.map((col) => ({
-            ...col,
-            minWidth: col.flex ? undefined : 120, // fallback for fixed-width columns
-            headerClassName: "wrapped-header",
-          }))}
+          columns={columns.map((col) => {
+            const smallCols = [
+              "feeds",
+              "chicks",
+              "total",
+              "quality",
+              "date",
+              "contact",
+            ];
+            const isSmall = smallCols.some((key) =>
+              col.field.toLowerCase().includes(key)
+            );
+            return {
+              ...col,
+              minWidth: isSmall ? 100 : 140,
+              flex: isSmall ? undefined : 1,
+            };
+          })}
+          disableVirtualization
           sortingMode="server"
           sortModel={sortModel}
           onSortModelChange={setSortModel}
@@ -162,22 +199,25 @@ const DashboardTable = ({
           }
           rowCount={pagination.total}
           pageSizeOptions={[10, 20, 50, 100]}
-          autoHeight
           disableRowSelectionOnClick
           checkboxSelection={false}
           isRowSelectable={() => false}
           getRowClassName={getRowClassName}
           sx={{
-            minWidth: "100%",
-            overflowX: "auto",
+            "& .MuiDataGrid-columnHeaderTitle": {
+              whiteSpace: "normal",
+              overflow: "visible",
+              textOverflow: "unset",
+              fontWeight: "bold",
+            },
+            "& .MuiDataGrid-virtualScrollerContent": {
+              backgroundColor: "#fffdf8",
+            },
+            "& .MuiDataGrid-row": {
+              borderBottom: "1px solid #f0f0f0",
+            },
             "& .visited-row": {
               backgroundColor: "#e8f5e9",
-            },
-
-            "& .wrapped-header .MuiDataGrid-columnHeaderTitle": {
-              whiteSpace: "normal",
-              lineHeight: 1.2,
-              wordWrap: "break-word",
             },
           }}
         />
