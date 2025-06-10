@@ -10,12 +10,12 @@ const VisitDateRangePicker = ({ pendingFilters, setPendingFilters }) => {
     setPendingFilters((prev) => {
       let updated = { ...prev, [key]: formattedDate };
       if (
-        key === "VisitDateFrom" &&
+        key === "visitDateFrom" &&
         formattedDate &&
-        prev.VisitDateTo &&
-        dayjs(formattedDate).isAfter(dayjs(prev.VisitDateTo))
+        prev.visitDateTo &&
+        dayjs(formattedDate).isAfter(dayjs(prev.visitDateTo))
       ) {
-        updated.VisitDateTo = formattedDate;
+        updated.visitDateTo = formattedDate;
       }
 
       return updated;
@@ -30,11 +30,11 @@ const VisitDateRangePicker = ({ pendingFilters, setPendingFilters }) => {
               label="Visit Date From"
               format="YYYY-MM-DD"
               onChange={(newValue) =>
-                handleDateOnChange("VisitDateFrom", newValue)
+                handleDateOnChange("visitDateFrom", newValue)
               }
               value={
-                pendingFilters.VisitDateFrom
-                  ? dayjs(pendingFilters.VisitDateFrom)
+                pendingFilters.visitDateFrom
+                  ? dayjs(pendingFilters.visitDateFrom)
                   : null
               }
               slotProps={{
@@ -51,16 +51,16 @@ const VisitDateRangePicker = ({ pendingFilters, setPendingFilters }) => {
               label="Visit Date To"
               format="YYYY-MM-DD"
               onChange={(newValue) =>
-                handleDateOnChange("VisitDateTo", newValue)
+                handleDateOnChange("visitDateTo", newValue)
               }
               value={
-                pendingFilters.VisitDateTo
-                  ? dayjs(pendingFilters.VisitDateTo)
+                pendingFilters.visitDateTo
+                  ? dayjs(pendingFilters.visitDateTo)
                   : null
               }
               minDate={
-                pendingFilters?.VisitDateFrom
-                  ? dayjs(pendingFilters?.VisitDateFrom)
+                pendingFilters?.visitDateFrom
+                  ? dayjs(pendingFilters?.visitDateFrom)
                   : undefined
               }
               slotProps={{
