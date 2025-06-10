@@ -39,8 +39,8 @@ const FilterDialog = ({
     visited: "All",
     lkDateCreatedFrom: "",
     lkDateCreatedTo: "",
-    VisitDateFrom: "",
-    VisitDateTo: "",
+    visitDateFrom: "",
+    visitDateTo: "",
   });
 
   const [loadingFilters, setLoadingFilters] = useState(false);
@@ -58,8 +58,8 @@ const FilterDialog = ({
       visited: "All",
       lkDateCreatedFrom: "",
       lkDateCreatedTo: "",
-      VisitDateFrom: "",
-      VisitDateTo: "",
+      visitDateFrom: "",
+      visitDateTo: "",
     });
   };
 
@@ -86,12 +86,12 @@ const FilterDialog = ({
   const handleDisabled = () => {
     const lkDateCreatedFrom = pendingFilters.lkDateCreatedFrom;
     const lkDateCreatedTo = pendingFilters.lkDateCreatedTo;
-    const VisitDateFrom = pendingFilters.VisitDateFrom;
-    const VisitDateTo = pendingFilters.VisitDateTo;
+    const visitDateFrom = pendingFilters.visitDateFrom;
+    const visitDateTo = pendingFilters.visitDateTo;
 
     const status =
       (lkDateCreatedFrom != "" && lkDateCreatedTo === "") ||
-      (VisitDateFrom != "" && VisitDateTo === "");
+      (visitDateFrom != "" && visitDateTo === "");
     return status;
   };
   return (
