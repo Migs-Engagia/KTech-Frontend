@@ -41,7 +41,7 @@ const DashboardTable = ({
           { field: "gilts", headerName: "Gilts" },
           { field: "gilt_current_feeds", headerName: "Feeds" },
           { field: "fatteners", headerName: "Fatteners" },
-          { field: "fattener_current_feeds", headerName: "Feeds" },
+          { field: "fatteners_current_feeds", headerName: "Feeds" },
           { field: "total", headerName: "Total" },
           { field: "piglet", headerName: "Piglet" },
           { field: "piglet_current_feeds", headerName: "Feeds" },
