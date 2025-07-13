@@ -1,6 +1,8 @@
+import PropTypes from "prop-types";
 import DateVisitedModal from "./ActionButtons/DateVisitedModal";
 import RecruitmentModal from "./ActionButtons/RecruitmentModal";
 import BagsPurchasedModal from "./ActionButtons/BagsPurchasedModal";
+import DuplicateRecordsModal from "./ActionButtons/DuplicateRecordsModal";
 
 const DashboardModals = ({ openModal, row, onClose, onSaveHandlers }) => {
   return (
@@ -34,8 +36,20 @@ const DashboardModals = ({ openModal, row, onClose, onSaveHandlers }) => {
         }}
         row={row}
       />
+
+      <DuplicateRecordsModal
+        open={openModal === "duplicate"}
+        onClose={onClose}
+      />
     </>
   );
+};
+
+DashboardModals.propTypes = {
+  openModal: PropTypes.string,
+  row: PropTypes.object,
+  onClose: PropTypes.func.isRequired,
+  onSaveHandlers: PropTypes.object.isRequired,
 };
 
 export default DashboardModals;

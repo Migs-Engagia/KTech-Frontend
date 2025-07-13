@@ -260,6 +260,7 @@ const Dashboard = ({ user }) => {
       <RecruitmentDashboardGuide metrics={metrics} />
       <HeaderActions
         onFilterClick={() => setFilterModalOpen(true)}
+        onDuplicateClick={() => setOpenModal("duplicate")}
         onSearchChange={(query) => {
           setSearchQuery(query);
           setPagination((prev) => ({ ...prev, page: 1 }));
