@@ -1,6 +1,7 @@
 import DateVisitedModal from "./ActionButtons/DateVisitedModal";
 import RecruitmentModal from "./ActionButtons/RecruitmentModal";
 import BagsPurchasedModal from "./ActionButtons/BagsPurchasedModal";
+import TagAsDuplicateModal from "./ActionButtons/TagAsDuplicateModal";
 
 const DashboardModals = ({ openModal, row, onClose, onSaveHandlers }) => {
   return (
@@ -30,6 +31,16 @@ const DashboardModals = ({ openModal, row, onClose, onSaveHandlers }) => {
         onClose={onClose}
         onSave={(data) => {
           onSaveHandlers.bags(data, row);
+          onClose();
+        }}
+        row={row}
+      />
+
+      <TagAsDuplicateModal
+        open={openModal === "duplicate"}
+        onClose={onClose}
+        onSave={(data) => {
+          onSaveHandlers.duplicate(data, row);
           onClose();
         }}
         row={row}

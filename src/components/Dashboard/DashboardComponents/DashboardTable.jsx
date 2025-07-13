@@ -1,18 +1,18 @@
 import { DataGrid } from "@mui/x-data-grid";
 import {
   Box,
-  Stack,
   IconButton,
   Tooltip,
-  TextField,
-  Button,
+  Stack,
 } from "@mui/material";
 import TodayIcon from "@mui/icons-material/Today";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import dayjs from "dayjs";
+
 
 const DashboardTable = ({
   data,
@@ -75,6 +75,7 @@ const DashboardTable = ({
     {
       field: "actions",
       headerName: "Action",
+      width: 180, // ensure enough width for buttons
       sortable: false,
       filterable: false,
       disableColumnMenu: true,
@@ -139,6 +140,17 @@ const DashboardTable = ({
               </IconButton>
             </span>
           </Tooltip>
+          <Tooltip title="Tag as Duplicate" arrow>
+            <span>
+              <IconButton
+                color="error"
+                onClick={() => onAction("duplicate", params.row)}
+                disabled={loading}
+              >
+                <ContentCopyIcon />
+              </IconButton>
+            </span>
+          </Tooltip>
         </Stack>
       ),
     },
@@ -162,6 +174,11 @@ const DashboardTable = ({
         <DataGrid
           rows={data}
           columns={columns.map((col) => {
+            // Skip mapping for actions column to preserve its width setting
+            if (col.field === "actions") {
+              return col;
+            }
+            
             const smallCols = [
               "feeds",
               "chicks",
