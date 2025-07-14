@@ -296,7 +296,7 @@ const Dashboard = ({ user }) => {
       
       <HeaderActions
         onFilterClick={() => setFilterModalOpen(true)}
-        onDuplicateClick={() => setOpenModal("duplicate")}
+        onDuplicateClick={() => setOpenModal("duplicateRecords")}
         onSearchChange={(query) => {
           setSearchQuery(query);
           setPagination((prev) => ({ ...prev, page: 1 }));
