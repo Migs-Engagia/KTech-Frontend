@@ -301,7 +301,7 @@ const FilterDialog = ({
       PaperProps={{ sx: { borderRadius: 3 } }}
     >
       <DialogTitle>
-        <Typography variant="h6">Filter Duplicate Records</Typography>
+      Filter Duplicate Records
       </DialogTitle>
       <DialogContent dividers>
         <Stack spacing={3}>
