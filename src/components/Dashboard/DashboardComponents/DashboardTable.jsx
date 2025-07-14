@@ -1,4 +1,4 @@
-import { DataGrid } from "@mui/x-data-grid";
+import { useRef } from "react";
 import {
   Box,
   IconButton,
@@ -12,79 +12,93 @@ import LocalMallIcon from "@mui/icons-material/LocalMall";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import dayjs from "dayjs";
+import PropTypes from "prop-types";
 
+// Import CustomDatatable
+import CustomDatatable from "../../Utilities/CustomDatatable";
 
 const DashboardTable = ({
-  data,
   user,
   onAction,
   loading,
   pagination,
-  setPagination,
   sortModel,
-  setSortModel,
+  data,
+  searchQuery,
+  onPageChange,
+  onRowsPerPageChange,
+  onSortChange,
+  onSearchChange,
 }) => {
   const isHogs = user.product_line === "Hogs/AH";
 
-  const columns = [
-    { field: "raiserName", headerName: "Raiser Name" },
-    { field: "province", headerName: "Province" },
-    { field: "city", headerName: "City/Municipality" },
-    { field: "barangay", headerName: "Barangay" },
-    { field: "contact", headerName: "Contact No." },
+  // Convert DataGrid columns to CustomDatatable format
+  const columnsData = [
+    { 
+      id: "raiserName", 
+      headerName: "Raiser Name",
+      sticky: true,
+      stickyLeft: 0,
+      width: 150,
+    },
+    { id: "province", headerName: "Province", width: 120, sticky: true, stickyLeft: 150 },
+    { id: "city", headerName: "City/Municipality", width: 150, sticky: true, stickyLeft: 270 },
+    { id: "barangay", headerName: "Barangay", width: 120, sticky: true, stickyLeft: 420 },
+    { id: "contact", headerName: "Contact No.", width: 120, sticky: true, stickyLeft: 540 },
     ...(isHogs
       ? [
-          { field: "boar", headerName: "Boars" },
-          { field: "boar_current_feeds", headerName: "Feeds" },
-          { field: "sow", headerName: "Sow" },
-          { field: "sow_current_feeds", headerName: "Feeds" },
-          { field: "gilts", headerName: "Gilts" },
-          { field: "gilt_current_feeds", headerName: "Feeds" },
-          { field: "fatteners", headerName: "Fatteners" },
-          { field: "fatteners_current_feeds", headerName: "Feeds" },
-          { field: "total", headerName: "Total" },
-          { field: "piglet", headerName: "Piglet" },
-          { field: "piglet_current_feeds", headerName: "Feeds" },
+          { id: "boar", headerName: "Boars", width: 80 },
+          { id: "boar_current_feeds", headerName: "Feeds", width: 80 },
+          { id: "sow", headerName: "Sow", width: 80 },
+          { id: "sow_current_feeds", headerName: "Feeds", width: 80 },
+          { id: "gilts", headerName: "Gilts", width: 80 },
+          { id: "gilt_current_feeds", headerName: "Feeds", width: 80 },
+          { id: "fatteners", headerName: "Fatteners", width: 100 },
+          { id: "fatteners_current_feeds", headerName: "Feeds", width: 80 },
+          { id: "total", headerName: "Total", width: 80 },
+          { id: "piglet", headerName: "Piglet", width: 80 },
+          { id: "piglet_current_feeds", headerName: "Feeds", width: 80 },
         ]
       : [
-          { field: "corded", headerName: "Corded" },
-          { field: "corded_current_feeds", headerName: "Feeds" },
-          { field: "broodhen", headerName: "Broodhen" },
-          { field: "broodhen_current_feeds", headerName: "Feeds" },
-          { field: "stag", headerName: "Stag" },
-          { field: "stag_current_feeds", headerName: "Feeds" },
-          { field: "broodcock", headerName: "Broodcock" },
-          { field: "broodcock_current_feeds", headerName: "Feeds" },
-          { field: "total", headerName: "Total" },
-          { field: "chicks", headerName: "Chicks" },
-          { field: "chick_current_feeds", headerName: "Feeds" },
+          { id: "corded", headerName: "Corded", width: 80 },
+          { id: "corded_current_feeds", headerName: "Feeds", width: 80 },
+          { id: "broodhen", headerName: "Broodhen", width: 100 },
+          { id: "broodhen_current_feeds", headerName: "Feeds", width: 80 },
+          { id: "stag", headerName: "Stag", width: 80 },
+          { id: "stag_current_feeds", headerName: "Feeds", width: 80 },
+          { id: "broodcock", headerName: "Broodcock", width: 100 },
+          { id: "broodcock_current_feeds", headerName: "Feeds", width: 80 },
+          { id: "total", headerName: "Total", width: 80 },
+          { id: "chicks", headerName: "Chicks", width: 80 },
+          { id: "chick_current_feeds", headerName: "Feeds", width: 80 },
         ]),
-    { field: "ktechName", headerName: "KTech Name" },
-    { field: "lkDateCreated", headerName: "LK Date Created" },
+    { id: "ktechName", headerName: "KTech Name", width: 120 },
+    { id: "lkDateCreated", headerName: "LK Date Created", width: 120 },
     {
-      field: "qualityRaiser",
+      id: "qualityRaiser",
       headerName: "Quality Raiser",
-      valueGetter: (value) => (value === true ? "Y" : "N"),
+      width: 100,
+      render: (row) => (row.qualityRaiser === true ? "Y" : "N"),
     },
     {
-      field: "dateOfVisit",
+      id: "dateOfVisit",
       headerName: "Visit Date",
-      valueGetter: (value) =>
-        value && value.length > 0 ? dayjs(value).format("MMMM D, YYYY") : "-",
+      width: 120,
+      render: (row) =>
+        row.dateOfVisit && row.dateOfVisit.length > 0 
+          ? dayjs(row.dateOfVisit).format("MMMM D, YYYY") 
+          : "-",
     },
     {
-      field: "actions",
+      id: "actions",
       headerName: "Action",
-      width: 180, // ensure enough width for buttons
-      sortable: false,
-      filterable: false,
-      disableColumnMenu: true,
-      renderCell: (params) => (
+      width: 180,
+      render: (row) => (
         <Stack direction="row" spacing={1} justifyContent="center">
           <Tooltip
             title={
-              params?.row?.customerVisited
-                ? `${params.row.raiserName} is visited`
+              row?.customerVisited
+                ? `${row.raiserName} is visited`
                 : "Set Date of Visit"
             }
             arrow
@@ -92,10 +106,10 @@ const DashboardTable = ({
             <span>
               <IconButton
                 color="info"
-                onClick={() => onAction("date", params.row)}
+                onClick={() => onAction("date", row)}
                 disabled={loading}
               >
-                {params?.row?.customerVisited ? (
+                {row?.customerVisited ? (
                   <EventAvailableIcon />
                 ) : (
                   <TodayIcon />
@@ -105,8 +119,8 @@ const DashboardTable = ({
           </Tooltip>
           <Tooltip
             title={
-              params?.row?.recruitmentStatus === 2
-                ? `${params.row.raiserName} is recruited`
+              row?.recruitmentStatus === 2
+                ? `${row.raiserName} is recruited`
                 : "Recruitment Status"
             }
             arrow
@@ -114,10 +128,10 @@ const DashboardTable = ({
             <span>
               <IconButton
                 color="success"
-                onClick={() => onAction("recruit", params.row)}
-                disabled={!params?.row?.customerVisited || loading}
+                onClick={() => onAction("recruit", row)}
+                disabled={!row?.customerVisited || loading}
               >
-                {params?.row?.recruitmentStatus === 2 ? (
+                {row?.recruitmentStatus === 2 ? (
                   <HowToRegIcon />
                 ) : (
                   <PersonAddAlt1Icon />
@@ -129,10 +143,10 @@ const DashboardTable = ({
             <span>
               <IconButton
                 color="warning"
-                onClick={() => onAction("bags", params.row)}
+                onClick={() => onAction("bags", row)}
                 disabled={
-                  !params?.row?.customerVisited ||
-                  params?.row?.recruitmentStatus !== 2 ||
+                  !row?.customerVisited ||
+                  row?.recruitmentStatus !== 2 ||
                   loading
                 }
               >
@@ -144,7 +158,7 @@ const DashboardTable = ({
             <span>
               <IconButton
                 color="error"
-                onClick={() => onAction("duplicate", params.row)}
+                onClick={() => onAction("duplicate", row)}
                 disabled={loading}
               >
                 <ContentCopyIcon />
@@ -156,8 +170,8 @@ const DashboardTable = ({
     },
   ];
 
-  const getRowClassName = (params) =>
-    params?.row?.customerVisited === true ? "visited-row" : "";
+  // CustomDatatable ref
+  const datatableRef = useRef();
 
   return (
     <Box
@@ -171,76 +185,46 @@ const DashboardTable = ({
           height: "650px",
         }}
       >
-        <DataGrid
-          rows={data}
-          columns={columns.map((col) => {
-            // Skip mapping for actions column to preserve its width setting
-            if (col.field === "actions") {
-              return col;
-            }
-            
-            const smallCols = [
-              "feeds",
-              "chicks",
-              "total",
-              "quality",
-              "date",
-              "contact",
-            ];
-            const isSmall = smallCols.some((key) =>
-              col.field.toLowerCase().includes(key)
-            );
-            return {
-              ...col,
-              minWidth: isSmall ? 100 : 140,
-              flex: isSmall ? undefined : 1,
-            };
-          })}
-          disableVirtualization
-          sortingMode="server"
-          sortModel={sortModel}
-          onSortModelChange={setSortModel}
-          getRowId={(row) => row.id}
+        <CustomDatatable
+          ref={datatableRef}
+          columnsData={columnsData}
+          rowsData={data}
+          rowsTotalCount={pagination.total}
           loading={loading}
-          paginationMode="server"
-          paginationModel={{
-            page: pagination.page - 1,
-            pageSize: pagination.limit,
-          }}
-          onPaginationModelChange={({ page, pageSize }) =>
-            setPagination((prev) => ({
-              ...prev,
-              page: page + 1,
-              limit: pageSize,
-            }))
-          }
-          rowCount={pagination.total}
-          pageSizeOptions={[10, 20, 50, 100]}
-          disableRowSelectionOnClick
-          checkboxSelection={false}
-          isRowSelectable={() => false}
-          getRowClassName={getRowClassName}
-          sx={{
-            "& .MuiDataGrid-columnHeaderTitle": {
-              whiteSpace: "normal",
-              overflow: "visible",
-              textOverflow: "unset",
-              fontWeight: "bold",
-            },
-            "& .MuiDataGrid-virtualScrollerContent": {
-              backgroundColor: "#fffdf8",
-            },
-            "& .MuiDataGrid-row": {
-              borderBottom: "1px solid #f0f0f0",
-            },
-            "& .visited-row": {
-              backgroundColor: "#e8f5e9",
-            },
-          }}
+          rowsPerPage={pagination.limit}
+          page={pagination.page - 1}
+          sort={sortModel[0] || { field: "", order: "asc" }}
+          searchValue={searchQuery}
+          onPageChange={onPageChange}
+          onRowsPerPageChange={onRowsPerPageChange}
+          onSortChange={onSortChange}
+          onSearchChange={onSearchChange}
+          minWidth={1670}
         />
       </Box>
     </Box>
   );
 };
 
+DashboardTable.propTypes = {
+  user: PropTypes.shape({
+    product_line: PropTypes.string.isRequired,
+  }).isRequired,
+  onAction: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
+  pagination: PropTypes.shape({
+    page: PropTypes.number.isRequired,
+    limit: PropTypes.number.isRequired,
+    total: PropTypes.number.isRequired,
+  }).isRequired,
+  sortModel: PropTypes.array.isRequired,
+  data: PropTypes.array.isRequired,
+  searchQuery: PropTypes.string.isRequired,
+  onPageChange: PropTypes.func.isRequired,
+  onRowsPerPageChange: PropTypes.func.isRequired,
+  onSortChange: PropTypes.func.isRequired,
+  onSearchChange: PropTypes.func.isRequired,
+};
+
 export default DashboardTable;
+
