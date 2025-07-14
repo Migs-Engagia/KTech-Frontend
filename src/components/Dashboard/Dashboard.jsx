@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Box, useTheme, Fab, Typography } from "@mui/material";
+import { Box, Fab } from "@mui/material";
 
 import axios from "../../utils/axiosInstance";
 
@@ -79,7 +79,7 @@ const Dashboard = ({ user }) => {
 
     if (
       (uploadFormRecords === "false" || uploadFormRecords === false) &&
-      searchQuery.length !== ""
+      searchQuery.length !== "" 
     ) {
       fetchRecruitmentData();
       fetchDashboardMetrics();
@@ -244,6 +244,41 @@ const Dashboard = ({ user }) => {
         setProgressLoading(false);
       }
     },
+
+    duplicate: async (data, row) => {
+      try {
+        const payload = {
+          id: row.id,
+          remarks: data.remarks,
+        };
+
+        setProgressLoading(true);
+
+        const response = await axios.post(
+          "/dashboard/tagAsDuplicate.json",
+          payload
+        );
+
+        if (response.data?.success) {
+          showResultModal("success", response.data.message || "Entry tagged as duplicate successfully.");
+          fetchRecruitmentData();
+          fetchDashboardMetrics();
+        } else {
+          showResultModal(
+            "error",
+            response.data?.message || "Failed to tag entry as duplicate."
+          );
+        }
+      } catch (err) {
+        showResultModal(
+          "error",
+          err?.response?.data?.message ||
+            "Something went wrong while tagging as duplicate."
+        );
+      } finally {
+        setProgressLoading(false);
+      }
+    },
   };
 
   const handleMarkAsUploaded = async () => {
@@ -258,6 +293,7 @@ const Dashboard = ({ user }) => {
   return (
     <Box>
       <RecruitmentDashboardGuide metrics={metrics} />
+      
       <HeaderActions
         onFilterClick={() => setFilterModalOpen(true)}
         onSearchChange={(query) => {
