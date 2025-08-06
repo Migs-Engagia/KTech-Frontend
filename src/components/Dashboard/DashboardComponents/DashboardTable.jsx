@@ -489,69 +489,94 @@ const DashboardTable = ({
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    className={getRowClassName(row)}
-                    sx={{
-                      "&:hover": { backgroundColor: "#f8f9fa" },
-                      "&.visited-row": { backgroundColor: "#e8f5e9" },
-                      height: "52px",
-                      "&:nth-of-type(even)": {
-                        backgroundColor: row?.customerVisited ? "#e8f5e9" : "#fffdf8",
-                      },
-                      "&:nth-of-type(odd)": {
-                        backgroundColor: row?.customerVisited ? "#e8f5e9" : "#ffffff",
-                      },
-                    }}
-                  >
-                    {/* Frozen Columns */}
-                    {frozenColumns.map((column, index) => (
-                      <TableCell
-                        key={column.field}
+                {data.length === 0 ? (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      sx={{
+                        textAlign: "center",
+                        padding: "60px 16px",
+                        backgroundColor: "#fffdf8",
+                        borderBottom: "1px solid #e0e0e0",
+                      }}
+                    >
+                      <Typography
+                        variant="body1"
                         sx={{
-                          position: "sticky",
-                          left: frozenColumns.slice(0, index).reduce((acc, col) => acc + getColumnWidth(col), 0),
-                          zIndex: 2,
-                          backgroundColor: getRowClassName(row) === "visited-row" ? "#e8f5e9" : "#fffdf8",
-                          borderRight: index === frozenColumns.length - 1 ? "2px solid #d0d0d0" : "",
-                          width: getColumnWidth(column),
-                          minWidth: getColumnWidth(column),
-                          maxWidth: getColumnWidth(column),
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          padding: "12px 16px",
-                          fontSize: "0.875rem",
-                          borderBottom: "1px solid #e0e0e0",
+                          color: "#666",
+                          fontSize: "1rem",
+                          fontWeight: 500,
                         }}
                       >
-                        {renderCellValue(row, column)}
-                      </TableCell>
-                    ))}
-                    
-                    {/* Scrollable Columns */}
-                    {scrollableColumns.map((column) => (
-                      <TableCell
-                        key={column.field}
-                        sx={{
-                          backgroundColor: getRowClassName(row) === "visited-row" ? "#e8f5e9" : "#fffdf8",
-                          width: getColumnWidth(column),
-                          minWidth: getColumnWidth(column),
-                          maxWidth: getColumnWidth(column),
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          padding: "12px 16px",
-                          fontSize: "0.875rem",
-                          borderBottom: "1px solid #e0e0e0",
-                        }}
-                      >
-                        {renderCellValue(row, column)}
-                      </TableCell>
-                    ))}
+                        No results found
+                      </Typography>
+                    </TableCell>
                   </TableRow>
-                ))}
+                ) : (
+                  data.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      className={getRowClassName(row)}
+                      sx={{
+                        "&:hover": { backgroundColor: "#f8f9fa" },
+                        "&.visited-row": { backgroundColor: "#e8f5e9" },
+                        height: "52px",
+                        "&:nth-of-type(even)": {
+                          backgroundColor: row?.customerVisited ? "#e8f5e9" : "#fffdf8",
+                        },
+                        "&:nth-of-type(odd)": {
+                          backgroundColor: row?.customerVisited ? "#e8f5e9" : "#ffffff",
+                        },
+                      }}
+                    >
+                      {/* Frozen Columns */}
+                      {frozenColumns.map((column, index) => (
+                        <TableCell
+                          key={column.field}
+                          sx={{
+                            position: "sticky",
+                            left: frozenColumns.slice(0, index).reduce((acc, col) => acc + getColumnWidth(col), 0),
+                            zIndex: 2,
+                            backgroundColor: getRowClassName(row) === "visited-row" ? "#e8f5e9" : "#fffdf8",
+                            borderRight: index === frozenColumns.length - 1 ? "2px solid #d0d0d0" : "",
+                            width: getColumnWidth(column),
+                            minWidth: getColumnWidth(column),
+                            maxWidth: getColumnWidth(column),
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            padding: "12px 16px",
+                            fontSize: "0.875rem",
+                            borderBottom: "1px solid #e0e0e0",
+                          }}
+                        >
+                          {renderCellValue(row, column)}
+                        </TableCell>
+                      ))}
+                      
+                      {/* Scrollable Columns */}
+                      {scrollableColumns.map((column) => (
+                        <TableCell
+                          key={column.field}
+                          sx={{
+                            backgroundColor: getRowClassName(row) === "visited-row" ? "#e8f5e9" : "#fffdf8",
+                            width: getColumnWidth(column),
+                            minWidth: getColumnWidth(column),
+                            maxWidth: getColumnWidth(column),
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            padding: "12px 16px",
+                            fontSize: "0.875rem",
+                            borderBottom: "1px solid #e0e0e0",
+                          }}
+                        >
+                          {renderCellValue(row, column)}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </TableContainer>
