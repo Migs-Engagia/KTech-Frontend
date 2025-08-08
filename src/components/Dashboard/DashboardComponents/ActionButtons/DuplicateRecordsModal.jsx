@@ -89,14 +89,24 @@ const DuplicateRecordsModal = ({ open, onClose }) => {
         sort: sortModel[0].sort || 'asc'
       } : null;
 
+      // Format dates in Y-m-d format for backend
+      const formattedFilters = {
+        ...filters,
+        lk_date_from: filters.lk_date_from ? filters.lk_date_from.format('YYYY-MM-DD') : null,
+        lk_date_to: filters.lk_date_to ? filters.lk_date_to.format('YYYY-MM-DD') : null,
+        visit_date_from: filters.visit_date_from ? filters.visit_date_from.format('YYYY-MM-DD') : null,
+        visit_date_to: filters.visit_date_to ? filters.visit_date_to.format('YYYY-MM-DD') : null,
+      };
+
       console.log('Sort model:', sortModel);
       console.log('Sort object being sent:', sortObject);
+      console.log('Formatted filters:', formattedFilters);
 
       const response = await axios.post("/dashboard/fetchDuplicateRecords.json", {
         page: pagination.page,
         limit: pagination.limit,
         search: searchQuery.trim(),
-        filters: filters,
+        filters: formattedFilters,
         sort: sortObject,
       });
 
@@ -284,7 +294,13 @@ const DuplicateRecordsModal = ({ open, onClose }) => {
                   headers={columns.map(col => col.headerName)}
                   queryParams={{
                     search: searchQuery,
-                    filters: filters,
+                    filters: {
+                      ...filters,
+                      lk_date_from: filters.lk_date_from ? filters.lk_date_from.format('YYYY-MM-DD') : null,
+                      lk_date_to: filters.lk_date_to ? filters.lk_date_to.format('YYYY-MM-DD') : null,
+                      visit_date_from: filters.visit_date_from ? filters.visit_date_from.format('YYYY-MM-DD') : null,
+                      visit_date_to: filters.visit_date_to ? filters.visit_date_to.format('YYYY-MM-DD') : null,
+                    },
                     sort: sortModel.length > 0 ? {
                       field: sortModel[0].field,
                       sort: sortModel[0].sort || 'asc'
