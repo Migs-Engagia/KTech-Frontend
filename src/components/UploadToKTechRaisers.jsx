@@ -142,9 +142,6 @@ const UploadToKtechRaisers = ({
             </Typography>
           </Box>
         </Box>
-        <Typography variant="subtitle1">
-          Syncing records... {uploaded} / {total ?? "?"}
-        </Typography>
       </DialogContent>
     </Dialog>
   );
