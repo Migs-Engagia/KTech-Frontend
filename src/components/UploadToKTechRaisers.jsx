@@ -89,7 +89,7 @@ const UploadToKtechRaisers = ({
       if (res.data?.success) {
         const batchUploaded = res.data.uploadedCount;
         const newUploaded = uploadedRef.current + batchUploaded;
-        const newLastId = res.data.last_id;
+        const newLastId = res.data.lastProcessedId;
 
         uploadedRef.current = newUploaded;
         setUploaded(newUploaded);
