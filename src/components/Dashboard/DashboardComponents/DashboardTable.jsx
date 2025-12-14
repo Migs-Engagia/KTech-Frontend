@@ -45,9 +45,11 @@ const DashboardTable = ({
 
   const columns = [
     { field: "raiserName", headerName: "Raiser Name", sortable: true, defaultWidth: 180 },
+    { field: "dealerName", headerName: "Dealer Name", sortable: true, defaultWidth: 180 },
     { field: "province", headerName: "Province", sortable: true, defaultWidth: 140 },
     { field: "city", headerName: "City/Municipality", sortable: true, defaultWidth: 180 },
     { field: "barangay", headerName: "Barangay", sortable: true, defaultWidth: 140 },
+    { field: "street", headerName: "Street", sortable: true, defaultWidth: 200 },
     { field: "contact", headerName: "Contact No.", sortable: true, defaultWidth: 140 },
     ...(isHogs
       ? [
@@ -102,8 +104,8 @@ const DashboardTable = ({
   ];
 
   // Frozen columns (first 5 columns)
-  const frozenColumns = columns.slice(0, 5);
-  const scrollableColumns = columns.slice(5);
+  const frozenColumns = columns.slice(0, 6);
+  const scrollableColumns = columns.slice(6);
 
   // Get column width with fallback to default
   const getColumnWidth = (column) => {
