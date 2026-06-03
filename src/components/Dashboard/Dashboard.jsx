@@ -11,7 +11,7 @@ import RecruitmentDashboardGuide from "./DashboardComponents/Card/RecruitmentDas
 
 import ProgressModal from "./../ProgressModal";
 import SuccessErrorModal from "./../SuccessErrorModal";
-import UploadToKtechRaisers from "./../UploadToKtechRaisers";
+import UploadToKTechRaisers from "./../UploadToKTechRaisers";
 
 import UploadIcon from "@mui/icons-material/CloudUpload";
 
@@ -344,7 +344,7 @@ const Dashboard = ({ user }) => {
         onClose={() => setResultModal({ ...resultModal, open: false })}
       />
 
-      <UploadToKtechRaisers
+      <UploadToKTechRaisers
         showResultModal={showResultModal}
         uploadFormRecords={uploadFormRecords}
         setUploadFormRecords={setUploadFormRecords}
