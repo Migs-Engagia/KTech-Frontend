@@ -29,6 +29,10 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 import axios from "../../../../utils/axiosInstance";
 import CsvExport from "../../../../utils/CSV/CsvExport";
+import {
+  getProvinceCities,
+  isCityValidForProvince,
+} from "../../../../utils/locationFilters";
 
 const DuplicateRecordsModal = ({ open, onClose }) => {
   const [data, setData] = useState([]);
@@ -56,6 +60,7 @@ const DuplicateRecordsModal = ({ open, onClose }) => {
     provinces: [],
     cities: [],
     ktech_names: [],
+    provinceCities: {},
   });
 
   // Column resizing state
@@ -576,6 +581,27 @@ const FilterDialog = ({
     setPendingFilters(filters);
   }, [filters]);
 
+  const provinceCities = filterOptions.provinceCities || {};
+  const availableCities = getProvinceCities(
+    pendingFilters.province,
+    provinceCities
+  );
+
+  useEffect(() => {
+    if (
+      !isCityValidForProvince(
+        pendingFilters.province,
+        pendingFilters.city,
+        provinceCities
+      )
+    ) {
+      setPendingFilters((prev) => ({
+        ...prev,
+        city: "All",
+      }));
+    }
+  }, [pendingFilters.province, pendingFilters.city, provinceCities]);
+
   const handleApply = () => {
     setFilters(pendingFilters);
     onApply();
@@ -616,6 +642,13 @@ const FilterDialog = ({
                 setPendingFilters((prev) => ({
                   ...prev,
                   province: e.target.value,
+                  city: isCityValidForProvince(
+                    e.target.value,
+                    prev.city,
+                    provinceCities
+                  )
+                    ? prev.city
+                    : "All",
                 }))
               }
             >
@@ -640,7 +673,7 @@ const FilterDialog = ({
               }
             >
               <MenuItem value="All">All</MenuItem>
-              {filterOptions.cities?.map((city) => (
+              {availableCities.map((city) => (
                 <MenuItem key={city} value={city}>
                   {city}
                 </MenuItem>
