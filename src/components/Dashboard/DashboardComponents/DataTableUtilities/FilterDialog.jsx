@@ -22,7 +22,10 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 import LKDateRangePicker from "./DateRangePickers/LKDateRangePicker";
 import VisitDateRangePicker from "./DateRangePickers/VisitDateRangePicker";
-import dayjs from "dayjs";
+import {
+  getProvinceCities,
+  isCityValidForProvince,
+} from "../../../../utils/locationFilters";
 const FilterDialog = ({
   open,
   onClose,
@@ -44,6 +47,11 @@ const FilterDialog = ({
   });
 
   const [loadingFilters, setLoadingFilters] = useState(false);
+  const provinceCities = filterOptions.provinceCities || {};
+  const availableCities = getProvinceCities(
+    pendingFilters.province,
+    provinceCities
+  );
 
   const handleApply = () => {
     setFilters(pendingFilters);
@@ -64,10 +72,34 @@ const FilterDialog = ({
   };
 
   useEffect(() => {
-    if (open && filterOptions?.cities?.length === 0) {
+    if (open && filterOptions?.provinces?.length === 0) {
       fetchFilterOptions();
     }
   }, [open]);
+
+  useEffect(() => {
+    if (open) {
+      setPendingFilters((prev) => ({
+        ...prev,
+        ...filters,
+      }));
+    }
+  }, [open, filters]);
+
+  useEffect(() => {
+    if (
+      !isCityValidForProvince(
+        pendingFilters.province,
+        pendingFilters.city,
+        provinceCities
+      )
+    ) {
+      setPendingFilters((prev) => ({
+        ...prev,
+        city: "All",
+      }));
+    }
+  }, [pendingFilters.province, pendingFilters.city, provinceCities]);
 
   const fetchFilterOptions = async () => {
     // setLoading(true);
@@ -136,6 +168,13 @@ const FilterDialog = ({
                   setPendingFilters((prev) => ({
                     ...prev,
                     province: e.target.value,
+                    city: isCityValidForProvince(
+                      e.target.value,
+                      prev.city,
+                      provinceCities
+                    )
+                      ? prev.city
+                      : "All",
                   }))
                 }
                 InputProps={{
@@ -175,7 +214,7 @@ const FilterDialog = ({
                 }}
               >
                 <MenuItem value="All">All</MenuItem>
-                {filterOptions.cities.map((city) => (
+                {availableCities.map((city) => (
                   <MenuItem key={city} value={city}>
                     {city}
                   </MenuItem>

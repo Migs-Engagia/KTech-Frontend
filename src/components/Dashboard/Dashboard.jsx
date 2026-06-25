@@ -61,6 +61,7 @@ const Dashboard = ({ user }) => {
     provinces: [],
     cities: [],
     municipalities: [],
+    provinceCities: {},
   });
 
   const [filterModalOpen, setFilterModalOpen] = useState(false);
