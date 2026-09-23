@@ -49,7 +49,7 @@ function Layout() {
         </Toolbar>
       </AppBar>
 
-      <Box component="main" sx={{ flexGrow: 1, p: 6, mt: 8 }}>
+      <Box component="main" sx={{ flexGrow: 1, minWidth: 0, p: 6, mt: 8 }}>
         <Dashboard user={user} />
       </Box>
     </Box>

@@ -64,3 +64,8 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* Keep wide dashboard tables from expanding the page's grid item. */
+#root {
+  min-width: 0;
+}

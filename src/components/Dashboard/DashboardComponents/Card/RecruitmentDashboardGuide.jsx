@@ -11,7 +11,7 @@ const MetricCard = ({ title, value, Icon, color }) => {
   return (
     <MUICard
       sx={{
-        minWidth: 200,
+        minWidth: 0,
         borderRadius: 3,
         boxShadow: 3,
         borderLeft: `6px solid ${color}`,
@@ -20,8 +20,8 @@ const MetricCard = ({ title, value, Icon, color }) => {
       }}
     >
       <CardContent>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Box>
+        <Box display="flex" justifyContent="space-between" alignItems="center" gap={2}>
+          <Box sx={{ minWidth: 0, flex: 1 }}>
             <Typography variant="subtitle2" color="text.secondary" gutterBottom>
               {title}
             </Typography>
@@ -29,7 +29,7 @@ const MetricCard = ({ title, value, Icon, color }) => {
               {value.toLocaleString()}
             </Typography>
           </Box>
-          <Box color={color}>
+          <Box color={color} sx={{ flexShrink: 0 }}>
             <Icon fontSize="large" />
           </Box>
         </Box>
@@ -47,7 +47,7 @@ const RecruitmentDashboardGuide = ({ metrics }) => {
       </Typography>
 
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={3}>
+        <Grid item xs={12} sm={6} md={3}>
           <MetricCard
             title="No. of Quality Raisers"
             value={metrics.qualityRaisers}
@@ -55,25 +55,25 @@ const RecruitmentDashboardGuide = ({ metrics }) => {
             color={blue[500]}
           />
         </Grid>
-        <Grid item xs={12} sm={3}>
+        <Grid item xs={12} sm={6} md={3}>
           <MetricCard
-            title="No. of LK Work In Progress"
+            title="No. of Store Activity - Work in Progress"
             value={metrics.wip}
             Icon={LoopIcon}
             color={orange[500]}
           />
         </Grid>
-        <Grid item xs={12} sm={3}>
+        <Grid item xs={12} sm={6} md={3}>
           <MetricCard
-            title="No. of LK Recruited"
+            title="No. of Store Activity - Recruited"
             value={metrics.recruited}
             Icon={GroupAddIcon}
             color={green[500]}
           />
         </Grid>
-        <Grid item xs={12} sm={3}>
+        <Grid item xs={12} sm={6} md={3}>
           <MetricCard
-            title="No. of LK Raisers"
+            title="No. of Store Activity - Raisers"
             value={metrics.totalRaisers}
             Icon={PersonIcon}
             color={red[500]}
